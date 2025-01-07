@@ -1,8 +1,14 @@
 @CHARSET "UTF-8";
+
+#body {
+	overflow: hidden;
+	position: absolute;
+}
+
 #wrapper {
 	background-color: yellow;
 	width: 1024px;
-	min-height: 1024px;
+	min-height: 800px;
 	margin-left: auto;
 	margin-right: auto;
 }

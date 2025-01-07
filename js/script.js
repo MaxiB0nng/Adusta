@@ -4,61 +4,79 @@ window.onload = function () {
 	var kanon = new Image();
 	var skud = false;
 	var x = 100;
-	var y = 720;
+	var y = 620;
 	var radius = 10;
+	var velocityX = 0; // Horisontal hastighed
+	var velocityY = 0; // Vertikal hastighed
+	var gravity = 9.8; // Gravitationsstyrke
 	kanon.src = "./img/kanon.png";
 
 	// Hastighedsslider
 	var slider = document.getElementById("hastighed");
 	var output = document.getElementById("hast");
-	output.innerHTML = slider.value;
+	output.innerHTML = slider.value; // Viser den aktuelle hastighed
 	slider.oninput = function () {
-		output.innerHTML = this.value; // Viser hastigheden på siden
+		output.innerHTML = this.value; // Opdaterer hastighed på siden
 	};
 
 	// Vinkelslider
 	var vinkel = document.getElementById("vinkel");
 	var vinkeloutput = document.getElementById("vink");
-	vinkeloutput.innerHTML = vinkel.value;
+	vinkeloutput.innerHTML = vinkel.value; // Viser den aktuelle vinkel
 	vinkel.oninput = function () {
-		vinkeloutput.innerHTML = this.value; // Viser vinklen på siden
+		vinkeloutput.innerHTML = this.value; // Opdaterer vinkel på siden
 	};
 
 	// Skud
-	var skudKnap = document.getElementById("skudKnap"); // Knap til skud
+	var skudKnap = document.getElementById("skudKnap"); // Knappen til at skyde
 	skudKnap.addEventListener("click", function () {
-		skud = true;
-		animate();
+		if (!skud) { // Kun skyd, hvis der ikke allerede er et aktivt skud
+			var speed = parseFloat(slider.value) / 10; // Beregn hastighed ud fra slideren
+			var angle = parseFloat(vinkel.value) * (Math.PI / 180); // Konverter vinkel til radianer
+			velocityX = speed * Math.cos(angle); // Initial horisontal hastighed
+			velocityY = -speed * Math.sin(angle); // Initial vertikal hastighed (negativ for opadgående)
+			skud = true;
+			animate();
+		}
 	});
 
-	// Viser kanon når siden loades
+	// Viser kanonen, når siden loades
 	kanon.onload = function () {
-		context.drawImage(kanon, 10, 700);
+		context.drawImage(kanon, 10, 600); // Tegn kanonen på sin startposition
 	};
 
 	function animate() {
-		// Kuglens koordinater
-		x = x + 2; // Juster efter hastighed
-		y = y - 1; // Juster efter vinkel
-		if (skud == true) {
-			context.clearRect(0, 0, 1024, 800);
-			// Kuglen tegnes
+		if (skud) {
+			// Opdater kuglens position
+			x += velocityX; // Horisontal bevægelse
+			velocityY += gravity / 100; // Tyngdekraft tilføjes til vertikal hastighed
+			y += velocityY; // Vertikal bevægelse
+
+			// Ryd canvas
+			context.clearRect(0, 0, canvas.width, canvas.height);
+
+			// Tegn kuglen
 			context.beginPath();
 			context.arc(x, y, radius, 0, 2 * Math.PI, false);
 			context.fillStyle = 'black';
 			context.fill();
 
-			if (x > 1040 || y < 0) { // Stop når kuglen er ude af skærmen
-				x = 100;
-				y = 720;
-				skud = false;
+			// Stop animationen, hvis kuglen forlader canvas
+			if (x > canvas.width || y > canvas.height) {
+				x = 100; // Reset kuglens startposition
+				y = 620;
+				velocityX = 0;
+				velocityY = 0;
+				skud = false; // Stop skuddet
 			} else {
-				requestAnimationFrame(animate); // Brug requestAnimationFrame for jævn animation
+				requestAnimationFrame(animate); // Fortsæt animationen
 			}
 		}
-		context.drawImage(kanon, 10, 700);
+
+		// Tegn kanonen igen
+		context.drawImage(kanon, 10, 600);
 	}
 
 	// Initial visning af kanonen
-	context.drawImage(kanon, 10, 700);
+	context.drawImage(kanon, 10, 600); // Tegn kanonen på dens startposition
 };
