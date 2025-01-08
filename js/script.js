@@ -17,6 +17,7 @@ window.onload = function () {
 	output.innerHTML = slider.value; // Viser den aktuelle hastighed
 	slider.oninput = function () {
 		output.innerHTML = this.value; // Opdaterer hastighed på siden
+		drawTrajectory()
 	};
 
 	// Vinkelslider
@@ -25,6 +26,7 @@ window.onload = function () {
 	vinkeloutput.innerHTML = vinkel.value; // Viser den aktuelle vinkel
 	vinkel.oninput = function () {
 		vinkeloutput.innerHTML = this.value; // Opdaterer vinkel på siden
+		drawTrajectory()
 	};
 
 	// Skud
@@ -40,10 +42,53 @@ window.onload = function () {
 		}
 	});
 
+
 	// Viser kanonen, når siden loades
 	kanon.onload = function () {
 		context.drawImage(kanon, 10, 600); // Tegn kanonen på sin startposition
 	};
+
+
+	function drawTrajectory() {
+		// Clear the canvas for a fresh start
+		context.clearRect(0, 0, canvas.width, canvas.height);
+
+		// Draw the cannon
+		context.drawImage(kanon, 10, 600);
+
+		// Get speed and angle
+		var speed = parseFloat(slider.value) / 7; // Adjust speed from slider
+		var angle = parseFloat(vinkel.value) * (Math.PI / 180); // Convert to radians
+
+		// Initial velocity components
+		var initialVelocityX = speed * Math.cos(angle);
+		var initialVelocityY = -speed * Math.sin(angle);
+
+		// Start position
+		var trajectoryX = x; // Starting x position
+		var trajectoryY = y; // Starting y position
+
+		// Draw the arc as a series of small circles or dots
+		context.strokeStyle = "green"; // Trajectory color
+		context.beginPath();
+		context.moveTo(trajectoryX, trajectoryY);
+
+		for (let t = 0; t < 200; t += 1) { // Simulate for 200 frames or until the trajectory ends
+			// Update trajectory positions based on time `t`
+			trajectoryX = x + initialVelocityX * t;
+			trajectoryY = y + initialVelocityY * t + 0.5 * gravity * Math.pow(t / 10, 2); // Gravity in action
+
+			// Stop drawing if it goes off-screen
+			if (trajectoryX > canvas.width || trajectoryY > canvas.height) break;
+
+			// Draw a line to the next point
+			context.lineTo(trajectoryX, trajectoryY);
+		}
+
+		context.stroke(); // Apply the trajectory drawing
+	}
+
+
 
 	function animate() {
 		if (skud) {
@@ -73,6 +118,7 @@ window.onload = function () {
 				requestAnimationFrame(animate); // Fortsæt animationen
 			}
 		}
+
 
 		// Tegn kanonen igen
 		context.drawImage(kanon, 10, 600);
