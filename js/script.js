@@ -8,7 +8,7 @@ window.onload = function () {
 	var radius = 10;
 	var velocityX = 0; // Horisontal hastighed
 	var velocityY = 0; // Vertikal hastighed
-	var gravity = 9.8; // Gravitationsstyrke
+	var gravity = 20; // Gravitationsstyrke
 	kanon.src = "./img/kanon.png";
 
 	// Hastighedsslider
@@ -31,7 +31,7 @@ window.onload = function () {
 	var skudKnap = document.getElementById("skudKnap"); // Knappen til at skyde
 	skudKnap.addEventListener("click", function () {
 		if (!skud) { // Kun skyd, hvis der ikke allerede er et aktivt skud
-			var speed = parseFloat(slider.value) / 10; // Beregn hastighed ud fra slideren
+			var speed = parseFloat(slider.value) / 7; // Beregn hastighed ud fra slideren
 			var angle = parseFloat(vinkel.value) * (Math.PI / 180); // Konverter vinkel til radianer
 			velocityX = speed * Math.cos(angle); // Initial horisontal hastighed
 			velocityY = -speed * Math.sin(angle); // Initial vertikal hastighed (negativ for opadgående)
@@ -47,6 +47,7 @@ window.onload = function () {
 
 	function animate() {
 		if (skud) {
+
 			// Opdater kuglens position
 			x += velocityX; // Horisontal bevægelse
 			velocityY += gravity / 100; // Tyngdekraft tilføjes til vertikal hastighed
