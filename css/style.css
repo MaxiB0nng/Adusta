@@ -1,8 +1,7 @@
 @CHARSET "UTF-8";
 
 #body {
-	overflow: hidden;
-	position: absolute;
+	background-color: black;
 }
 
 #wrapper {
@@ -11,13 +10,23 @@
 	min-height: 800px;
 	margin-left: auto;
 	margin-right: auto;
-}
-#myCanvas {
-	background-color: grey;	
+	z-index: 1;
 }
 
-button{
-	margin: 10px;
+#player {
+	background-color: #00000000;
+	position: absolute;
+	top: auto;
+	left: auto;
+	z-index: 3;
 }
-	
+
+#arc {
+	background-color: grey;
+	position: absolute;
+	top: auto;
+	left: auto;
+	z-index: 2;
+}
+
 
