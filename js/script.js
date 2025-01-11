@@ -5,12 +5,11 @@ window.onload = function () {
 	var context_player = canvas_player.getContext('2d');
 	var canvas_arc = document.getElementById('arc');
 	var context_arc = canvas_arc.getContext('2d');
+	var canvas_ground = document.getElementById('ground');
+	var context_ground = canvas_ground.getContext('2d');
 
 	// Initialiser forskellige variabler
 	var kanon = new Image();
-	var skud = false; // Holder styr på om et skud er aktivt
-	var skudX = tankX; // Starter X-position for skud
-	var skudY = tankY; // Starter Y-position for skud
 	var radius = 10; // Radius for skuddet
 	var velocityX = 0; // Vandret hastighed
 	var velocityY = 0; // Lodret hastighed
@@ -20,6 +19,9 @@ window.onload = function () {
 	var tankXmiddle = tankX + 50; // Midten af tanken (X)
 	var tankYmiddle = tankY + 35; // Midten af tanken (Y)
 	var movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
+	var skud = false; // Holder styr på om et skud er aktivt
+	var skudX = tankX; // Starter X-position for skud
+	var skudY = tankY; // Starter Y-position for skud
 	var power = 75; // Hvor kraftig kanonen er
 	var vinkel = 45; // Vinkel på skud (i grader)
 	let upPressed = false;
@@ -27,9 +29,121 @@ window.onload = function () {
 	let rightPressed = false;
 	let leftPressed = false;
 	let ePressed = false;
+	var ground_level = 680;
+	var start_spot = 220;
+	var start_spot_random = Math.random() * (100 - 20) + 20;
+	var start = Math.min(start_spot + start_spot_random, canvas_ground.width);
+	var random_length = Math.random() * (250 - 120) + 40;
+	var random_length2 = Math.random() * (250 - 120) + 40;
+	var number_pillars = Math.floor(Math.random() * (4 - 1)) + 1; // Generates 1 or 2 or 3.
+	var pillars = [
+		{height: Math.random() * (250 - 50) + 50, width: Math.random() * (80 - 20) + 40},
+		{height: Math.random() * (250 - 50) + 50, width: Math.random() * (80 - 20) + 40},
+		{height: Math.random() * (250 - 50) + 50, width: Math.random() * (80 - 20) + 40},
+	];
+	var firstpilar = start + pillars[0].width;
 
-	kanon.src = "./img/kanon.png"; // Indlæs kanonbilledet
-	drawTrajectory();
+
+	function make_ground() {
+		context_ground.clearRect(0, 0, canvas_ground.width, canvas_ground.height);
+		context_ground.beginPath();
+		context_ground.moveTo(0, ground_level);
+		context_ground.lineTo(start, ground_level);
+		context_ground.lineTo(start, ground_level - pillars[0].height);
+		context_ground.lineTo(firstpilar, ground_level - pillars[0].height);
+		context_ground.lineTo(firstpilar, ground_level);
+		context_ground.lineTo(firstpilar + random_length, ground_level);
+
+		// Generate hitboxes array
+		var hitboxes = [
+			{x: start, y: ground_level - pillars[0].height, width: pillars[0].width, height: pillars[0].height},
+		];
+
+		if (number_pillars > 1) {
+			context_ground.lineTo(firstpilar + random_length, ground_level - pillars[1].height);
+			context_ground.lineTo(firstpilar + random_length + pillars[1].width, ground_level - pillars[1].height);
+			context_ground.lineTo(firstpilar + random_length + pillars[1].width, ground_level);
+
+			hitboxes.push({
+				x: firstpilar + random_length,
+				y: ground_level - pillars[1].height,
+				width: pillars[1].width,
+				height: pillars[1].height,
+			});
+		}
+
+		if (number_pillars > 2) {
+			context_ground.lineTo(firstpilar + random_length + pillars[1].width + random_length2, ground_level);
+			context_ground.lineTo(
+				firstpilar + random_length + pillars[1].width + random_length2,
+				ground_level - pillars[2].height
+			);
+			context_ground.lineTo(
+				firstpilar + random_length + pillars[1].width + random_length2 + pillars[2].width,
+				ground_level - pillars[2].height
+			);
+			context_ground.lineTo(
+				firstpilar + random_length + pillars[1].width + random_length2 + pillars[2].width,
+				ground_level
+			);
+
+			hitboxes.push({
+				x: firstpilar + random_length + pillars[1].width + random_length2,
+				y: ground_level - pillars[2].height,
+				width: pillars[2].width,
+				height: pillars[2].height,
+			});
+		}
+		context_ground.lineTo(canvas_ground.width, ground_level);
+
+		// Draw hitboxes for testing
+		context_ground.lineWidth = 5;
+		context_ground.strokeStyle = "black";
+		context_ground.stroke();
+
+		hitboxes.forEach((box) => {
+			context_ground.beginPath();
+			context_ground.rect(box.x, box.y, box.width, box.height);
+			context_ground.strokeStyle = "blue";
+			context_ground.stroke();
+		});
+
+		// Prevent tank and bullet from entering hitboxes
+		hitboxes.forEach((box) => {
+			// Handle tank collision
+			if (
+				tankX + kanon.width > box.x &&
+				tankX < box.x + box.width &&
+				tankY + kanon.height > box.y &&
+				tankY < box.y + box.height
+			) {
+				if (tankX + kanon.width / 2 < box.x + box.width / 2) {
+					tankX = box.x - kanon.width; // Push tank to the left of the hitbox
+				} else {
+					tankX = box.x + box.width; // Push tank to the right of the hitbox
+				}
+			}
+
+			// Handle bullet collision
+			if (
+				skud &&
+				skudX + radius > box.x &&
+				skudX - radius < box.x + box.width &&
+				skudY + radius > box.y &&
+				skudY - radius < box.y + box.height
+			) {
+
+				skud = false; // Mark bullet as inactive
+				skudX = tankX + 25; // Reset bullet position
+				skudY = tankY;
+				velocityX = 0;
+				velocityY = 0;
+				drawTrajectory()
+
+			}
+		});
+	}
+
 
 
 	// Lyt til tastetryk for tankens bevægelse
@@ -66,7 +180,7 @@ window.onload = function () {
 	function updateVinkel() {
 		if (upPressed) {
 			vinkel += 0.5;
-			if (vinkel > 90) vinkel = 90; // Begræns vinkel til max 90 grader
+			if (vinkel > 180) vinkel = 180; // Begræns vinkel til max 90 grader
 			drawTrajectory();
 		}
 		if (downPressed) {
@@ -113,8 +227,6 @@ window.onload = function () {
 			}
 		}
 
-
-
 		// Ryd canvas og tegn tanken igen
 		context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
 		context_player.drawImage(kanon, tankX, tankY);
@@ -130,6 +242,7 @@ window.onload = function () {
 	function drawTrajectory() {
 		tankXmiddle = tankX + 50;
 		tankYmiddle = tankY + 35;
+
 		if (!skud) {
 			skudX = tankXmiddle;
 			skudY = tankYmiddle;
@@ -151,14 +264,15 @@ window.onload = function () {
 				trajectoryX = skudX + initialVelocityX * t;
 				trajectoryY = skudY + initialVelocityY * t + 0.5 * gravity * Math.pow(t / 10, 2);
 
-				if (trajectoryX > canvas_arc.width || trajectoryY > canvas_arc.height) break;
-
-				context_arc.lineTo(trajectoryX, trajectoryY);
+				if (trajectoryX > canvas_arc.width || trajectoryY > ground_level) break;
 			}
+
 
 			context_arc.stroke();
 			requestAnimationFrame(drawTrajectory);
+
 		}
+		make_ground();
 	}
 
 	// Funktion til at animere skuddet

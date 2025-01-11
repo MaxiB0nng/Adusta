@@ -4,13 +4,12 @@
 	background-color: black;
 }
 
-#wrapper {
-	background-color: yellow;
-	width: 1024px;
-	min-height: 800px;
-	margin-left: auto;
-	margin-right: auto;
-	z-index: 1;
+#ground {
+	background-color: #00000000;
+	position: absolute;
+	top: auto;
+	left: auto;
+	z-index: 3;
 }
 
 #player {
@@ -18,7 +17,7 @@
 	position: absolute;
 	top: auto;
 	left: auto;
-	z-index: 3;
+	z-index: 4;
 }
 
 #arc {
@@ -28,5 +27,4 @@
 	left: auto;
 	z-index: 2;
 }
-
 
