@@ -43,6 +43,8 @@ window.onload = function () {
 	];
 	var firstpilar = start + pillars[0].width;
 
+	kanon.src = "img/kanon.png";
+	drawTrajectory()
 
 	function make_ground() {
 		context_ground.clearRect(0, 0, canvas_ground.width, canvas_ground.height);
@@ -264,13 +266,15 @@ window.onload = function () {
 				trajectoryX = skudX + initialVelocityX * t;
 				trajectoryY = skudY + initialVelocityY * t + 0.5 * gravity * Math.pow(t / 10, 2);
 
+				context_arc.lineTo(trajectoryX, trajectoryY); // Ensure trajectory lines are drawn
+
 				if (trajectoryX > canvas_arc.width || trajectoryY > ground_level) break;
 			}
 
-
 			context_arc.stroke();
-			requestAnimationFrame(drawTrajectory);
 
+		} else {
+			context_arc.clearRect(0, 0, canvas_arc.width, canvas_arc.height); // Clear arc canvas if skud is active
 		}
 		make_ground();
 	}
