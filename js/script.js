@@ -20,9 +20,10 @@ window.onload = function () {
 	var tankYmiddle = tankY + 35; // Midten af tanken (Y)
 	var movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
 	var skud = false; // Holder styr på om et skud er aktivt
+	var skud_cooldown = 250 //cooldown til skudet
 	var skudX = tankX; // Starter X-position for skud
 	var skudY = tankY; // Starter Y-position for skud
-	var power = 75; // Hvor kraftig kanonen er
+	var power = 85; // Hvor kraftig kanonen er
 	var vinkel = 45; // Vinkel på skud (i grader)
 	let upPressed = false;
 	let downPressed = false;
@@ -142,9 +143,15 @@ window.onload = function () {
 				velocityY = 0;
 				drawTrajectory()
 
+
+					// Genoptegn opdateret tilstand af banen
+					make_ground();
+
 			}
 		});
 	}
+
+
 
 
 
@@ -182,7 +189,7 @@ window.onload = function () {
 	function updateVinkel() {
 		if (upPressed) {
 			vinkel += 0.5;
-			if (vinkel > 180) vinkel = 180; // Begræns vinkel til max 90 grader
+			if (vinkel > 88) vinkel = 88; // Begræns vinkel til max 90 grader
 			drawTrajectory();
 		}
 		if (downPressed) {
@@ -193,23 +200,37 @@ window.onload = function () {
 	}
 	function shoot() {
 		if (!skud) {
-			// Beregn skudhastigheden og vinklen
-			var speed = power / 7; // Brug "power"-variablen til at definere skudhastigheden
-			var angle = vinkel * (Math.PI / 180); // Brug "vinkel"-variablen (omregnet til radianer)
-			velocityX = speed * Math.cos(angle); // Vandret hastighed
-			velocityY = -speed * Math.sin(angle); // Lodret hastighed
-			skud = true;
+			if (skud_cooldown < 2) {
+				// Beregn skudhastigheden og vinklen
+				var speed = power / 7; // Brug "power"-variablen til at definere skudhastigheden
+				var angle = vinkel * (Math.PI / 180); // Brug "vinkel"-variablen (omregnet til radianer)
+				velocityX = speed * Math.cos(angle); // Vandret hastighed
+				velocityY = -speed * Math.sin(angle); // Lodret hastighed
+				skud = true;
 
-			// Opdater position til midten af tanken
-			tankXmiddle = tankX + 50;
-			tankYmiddle = tankY + 35;
-			skudX = tankXmiddle;
-			skudY = tankYmiddle;
+				// Opdater position til midten af tanken
+				tankXmiddle = tankX + 50;
+				tankYmiddle = tankY + 35;
+				skudX = tankXmiddle;
+				skudY = tankYmiddle;
+				skud_cooldown = 0;
+				skud_cooldown += 250;
 
-			animate(); // Start animationen
-			drawTrajectory(); // Beregn og tegn fuld bane
+				animate(); // Start animationen
+				drawTrajectory(); // Beregn og tegn fuld bane
+			}
 		}
+
 	}
+
+	//minser cooldown så den går ned af
+	setInterval(() => {
+		if (skud_cooldown > 0) {
+			skud_cooldown = Math.max(0, skud_cooldown - 1); // Ensure cooldown doesn't go below 0
+			console.log(skud_cooldown);
+		}
+	}, 10);
+
 
 	// Start funktionen til at tracke tankens bevægelse
 	updateTankPosition();
