@@ -20,11 +20,14 @@ window.onload = function () {
     var _1tankYmiddle = _1tankY + 35; // Midten af tanken (Y)
     var _1movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
     var _1skud = false; // Holder styr på om et skud er aktivt
+    var _1charge_cooldown = 10 //såre for at der en buffer mellem at charge og at skyde
     var _1skud_cooldown = 100; // Cooldown til skuddet
     var _1skudX = _1tankX; // Starter X-position for skud
     var _1skudY = _1tankY; // Starter Y-position for skud
     var _1power = 80; // Hvor kraftig kanonen er
+    var _1charge_power = 0 //hvor meget kraft exstra
     var _1vinkel = 45; // Vinkel på skud (i grader)
+    var damageHeight = 60;
     let upPressed = false;
     let downPressed = false;
     let rightPressed = false;
@@ -146,7 +149,10 @@ window.onload = function () {
                 const pillarIndex = hitboxes.indexOf(box);
 
                 if (pillarIndex !== -1 && pillars[pillarIndex]) {
-                    var damageHeight = 60;
+
+                    console.log(_1charge_power);
+                    console.log(damageHeight);
+
 
                     // Reduce the height of the impacted pillar
                     pillars[pillarIndex].height -= damageHeight;
@@ -155,12 +161,10 @@ window.onload = function () {
                     if (box) {
                         box.height -= damageHeight;
                         box.y += damageHeight;
-                        if (pillar.height < 20) {
-                            pillar.height = 0;
-                        }
+
                     }
 
-                    console.log(pillars[pillarIndex].height);
+
 
                     // Redraw the landscape to reflect updated changes
                     make_ground();
@@ -181,6 +185,8 @@ window.onload = function () {
             downPressed = true;
         } else if (event.key === 'e' || event.key === 'E') {
             shoot();
+        } else if (event.key === 'q' || event.key === 'Q') {
+            charge();
         }
     });
 
@@ -217,12 +223,17 @@ window.onload = function () {
         if (!_1skud) {
             if (_1skud_cooldown < 2) {
                 // Beregn skudhastigheden og vinklen
-                var speed = _1power / 7; // Brug "power"-variablen til at definere skudhastigheden
+                var speed = (_1power / 7) + (_1charge_power /100); // Brug "power"-variablen til at definere fart
                 var angle = _1vinkel * (Math.PI / 180); // Brug "vinkel"-variablen (omregnet til radianer)
                 velocityX = speed * Math.cos(angle); // Vandret hastighed
                 velocityY = -speed * Math.sin(angle); // Lodret hastighed
                 _1skud = true;
 
+                if (_1charge_power >= 50) {
+                    damageHeight = 80;
+                } else {
+                    damageHeight = 50;
+                }
                 // Opdater position til midten af tanken
                 _1tankXmiddle = _1tankX + 50;
                 _1tankYmiddle = _1tankY + 35;
@@ -230,9 +241,22 @@ window.onload = function () {
                 _1skudY = _1tankYmiddle;
                 _1skud_cooldown = 0;
                 _1skud_cooldown += 100;
+                _1charge_cooldown = 0;
+                _1charge_cooldown += 10;
+                _1charge_power = 0;
 
                 animate(); // Start animationen
                 drawTrajectory(); // Beregn og tegn fuld bane
+            }
+        }
+    }
+
+    function charge() {
+        if (_1charge_cooldown < 2) {
+            if (_1charge_power < 100) {
+                _1charge_power += 1;
+                console.log(_1charge_power);
+                drawTrajectory()
             }
         }
     }
@@ -241,7 +265,10 @@ window.onload = function () {
     setInterval(() => {
         if (_1skud_cooldown > 0) {
             _1skud_cooldown = Math.max(0, _1skud_cooldown - 1); // Ensure cooldown doesn't go below 0
-            console.log(_1skud_cooldown);
+        }
+        if (_1charge_cooldown > 0) {
+            _1charge_cooldown = Math.max(0, _1charge_cooldown - 1); // Ensure cooldown doesn't go below 0
+            console.log(_1charge_cooldown);
         }
     }, 10);
 
@@ -283,7 +310,7 @@ window.onload = function () {
             _1skudX = _1tankXmiddle;
             _1skudY = _1tankYmiddle;
             context_arc.clearRect(0, 0, canvas_arc.width, canvas_arc.height);
-            var speed = _1power / 7; // Brug "power"-variablen til at definere fart
+            var speed = (_1power / 7) + (_1charge_power /100); // Brug "power"-variablen til at definere fart
             var angle = _1vinkel * (Math.PI / 180); // Brug "vinkel"-variablen til bane
 
             var initialVelocityX = speed * Math.cos(angle);
@@ -292,7 +319,12 @@ window.onload = function () {
             var trajectoryX = _1skudX;
             var trajectoryY = _1skudY;
 
-            context_arc.strokeStyle = "red";
+            context_arc.strokeStyle = "orange";
+            if (_1charge_power >= 50) {
+                context_arc.strokeStyle = "red";
+            }
+            context_arc.lineWidth = 2;
+            context_arc.lineCap = "round";
             context_arc.beginPath();
             context_arc.moveTo(trajectoryX, trajectoryY);
 
