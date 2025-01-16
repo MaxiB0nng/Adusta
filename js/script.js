@@ -161,7 +161,9 @@ window.onload = function () {
                 _1velocityX = 0;
                 _1velocityY = 0;
                 context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                _1drawTrajectory();
+                context_player.drawImage(_1kanon, _1tankX, _1tankY);
+                context_player.drawImage(_2kanon, _2tankX, _2tankY);
+
 
                 // Find the pillar that was hit, based on the hitbox
                 const pillarIndex = hitboxes.indexOf(box);
@@ -211,7 +213,8 @@ window.onload = function () {
                     _2velocityY = 0;
 
                     context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                    _2drawTrajectory();
+
+
 
                     // Find den ramte pillar baseret på hitboxen
                     const pillarIndex = hitboxes.indexOf(box);
@@ -292,6 +295,8 @@ window.onload = function () {
         }
     });
 
+    gameLoop();
+
     //minser cooldown så den går ned af
     setInterval(() => {
         if (_1skud_cooldown > 0) {
@@ -313,6 +318,7 @@ window.onload = function () {
     //player 1
     function player1() {
         _1update();
+
 
         // Opdater vinkel, når "W" eller "S" tasten holdes nede
         function _1updateVinkel() {
@@ -391,6 +397,9 @@ window.onload = function () {
         function _1drawTrajectory() {
             _1tankXmiddle = _1tankX + 50;
             _1tankYmiddle = _1tankY + 35;
+            context_player.clearRect(0, 0, canvas_arc.width, canvas_arc.height);
+            context_player.drawImage(_1kanon, _1tankX, _1tankY);
+            context_player.drawImage(_2kanon, _2tankX, _2tankY);
 
             if (!_1skud) {
                 _1skudX = _1tankXmiddle;
@@ -428,8 +437,6 @@ window.onload = function () {
                 }
 
                 context_arc.stroke();
-            } else {
-                context_arc.clearRect(0, 0, canvas_arc.width, canvas_arc.height); // Clear arc canvas if _1skud is active
             }
             make_ground();
         }
@@ -443,7 +450,6 @@ window.onload = function () {
 
                 // Ryd player-canvas og tegn igen
                 context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                context_player.drawImage(_2kanon, _2tankX, _2tankY);
 
                 // Fjern rød bane, hvor skuddet er
                 context_arc.clearRect(_1skudX - radius, _1skudY - radius, radius * 2, radius * 2);
@@ -464,7 +470,6 @@ window.onload = function () {
                     requestAnimationFrame(_1animate); // Fortsæt animationen
                 }
                 // Tegn kanonen igen ved dens nuværende position
-                context_player.drawImage(_1kanon, _1tankX, _1tankY);
                 _1drawTrajectory();
             }
         }
@@ -472,13 +477,16 @@ window.onload = function () {
         function _1update() {
             _1updateVinkel()
             _1updateTankPosition();
+            _1drawTrajectory();
 
             if (_1shootPressed === true) {
-
+                _1shoot()
             }
+
 
             requestAnimationFrame(_1update);
         }
+
     }
 
 
@@ -490,10 +498,9 @@ window.onload = function () {
         // Opdater positioner for spillere
         player1();
 
+        context_player.drawImage(_1kanon, _1tankX, _1tankY);
+        context_player.drawImage(_2kanon, _2tankX, _2tankY);
+
     }
-
-// Start loopet
-    gameLoop();
-
 
 };

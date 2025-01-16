@@ -23,7 +23,7 @@ body {
     margin-top: -50px; /* Shift up to make room for controls */
 }
 
-#ground, #player, #arc {
+#ground, #player, #arc #bullet {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -42,7 +42,7 @@ body {
     clip-path: inset(0% 0% 0% 0% round 20px);
     filter: brightness(1.1) contrast(1.2);
 }
-#ground, #player, #arc {
+#ground, #player, #arc #bullet{
     position: absolute;
     top: 50%;
     left: 50%;
@@ -61,6 +61,7 @@ body {
     clip-path: inset(0% 0% 0% 0% round 20px);
 }
 
+#bullet { z-index: 5; }
 #ground { z-index: 3; }
 #player { z-index: 4; }
 #arc {
