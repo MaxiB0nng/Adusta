@@ -5,7 +5,7 @@ window.onload = function () {
     var context_player = canvas_player.getContext('2d');
     var canvas_arc1 = document.getElementById('arc1');
     var context_arc1 = canvas_arc1.getContext('2d');
-    var canvas_arc2 = document.getElementById('arc1');
+    var canvas_arc2 = document.getElementById('arc2');
     var context_arc2 = canvas_arc2.getContext('2d');
     var canvas_ground = document.getElementById('ground');
     var context_ground = canvas_ground.getContext('2d');
@@ -30,7 +30,6 @@ window.onload = function () {
     var _1movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
     var _1skud = false; // Holder styr på om et skud er aktivt
     var _1charge_cooldown = 10 //såre for at der en buffer mellem at charge og at skyde
-    var _1skud_cooldown = 100; // Cooldown til skuddet
     var _1skudX = _1tankX; // Starter X-position for skud
     var _1skudY = _1tankY; // Starter Y-position for skud
     var _1power = 80; // Hvor kraftig kanonen er
@@ -56,7 +55,6 @@ window.onload = function () {
     var _2movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
     var _2skud = false; // Holder styr på om et skud er aktivt
     var _2charge_cooldown = 10 //såre for at der en buffer mellem at charge og at skyde
-    var _2skud_cooldown = 100; // Cooldown til skuddet
     var _2skudX = _2tankX; // Starter X-position for skud
     var _2skudY = _2tankY; // Starter Y-position for skud
     var _2power = 80; // Hvor kraftig kanonen er
@@ -306,15 +304,9 @@ window.onload = function () {
 
     //minser cooldown så den går ned af
     setInterval(() => {
-        if (_1skud_cooldown > 0) {
-            _1skud_cooldown = Math.max(0, _1skud_cooldown - 1); // Ensure cooldown doesn't go below 0
-        }
         if (_1charge_cooldown > 0) {
             _1charge_cooldown = Math.max(0, _1charge_cooldown - 1); // Ensure cooldown doesn't go below 0
 
-        }
-        if (_2skud_cooldown > 0) {
-            _2skud_cooldown = Math.max(0, _2skud_cooldown - 1); // Ensure cooldown doesn't go below 0
         }
         if (_2charge_cooldown > 0) {
             _2charge_cooldown = Math.max(0, _2charge_cooldown - 1); // Ensure cooldown doesn't go below 0
@@ -345,7 +337,7 @@ window.onload = function () {
 
         function _1shoot() {
             if (!_1skud) {
-                if (_1skud_cooldown < 2) {
+
                     // Beregn skudhastigheden og vinklen
                     var _1speed = (_1power / 7) + (_1charge_power / 100); // Brug "power"-variablen til at definere fart
                     var _1angle = _1vinkel * (Math.PI / 180); // Brug "vinkel"-variablen (omregnet til radianer)
@@ -353,7 +345,7 @@ window.onload = function () {
                     _1velocityY = -_1speed * Math.sin(_1angle); // Lodret hastighed
                     _1skud = true;
 
-                }
+
                 if (_1charge_power <= 35) {
                     _1damageHeight = 50;
                 }
@@ -369,8 +361,6 @@ window.onload = function () {
                 _1tankYmiddle = _1tankY + 35;
                 _1skudX = _1tankXmiddle;
                 _1skudY = _1tankYmiddle;
-                _1skud_cooldown = 0;
-                _1skud_cooldown += 100;
                 _1charge_cooldown = 0;
                 _1charge_cooldown += 10;
                 _1charge_power = 0;
@@ -436,16 +426,19 @@ window.onload = function () {
         function _1drawTrajectory() {
             _1tankXmiddle = _1tankX + 50;
             _1tankYmiddle = _1tankY + 35;
-            context_player.clearRect(0, 0, canvas_arc1.width, canvas_arc1.height);
+
+            context_arc1.clearRect(0, 0, canvas_arc1.width, canvas_arc1.height); // Ensure arc canvas is cleared first
+            context_player.clearRect(0, 0, canvas_player.width, canvas_player.height); // Ensure player canvas is cleared
+
             context_player.drawImage(_1kanon, _1tankX, _1tankY);
             context_player.drawImage(_2kanon, _2tankX, _2tankY);
 
             if (!_1skud) {
                 _1skudX = _1tankXmiddle;
                 _1skudY = _1tankYmiddle;
-                context_arc1.clearRect(0, 0, canvas_arc1.width, canvas_arc1.height);
-                var _1speed = (_1power / 7) + (_1charge_power / 100); // Brug "power"-variablen til at definere fart
-                var _1angle = _1vinkel * (Math.PI / 180); // Brug "vinkel"-variablen til bane
+
+                var _1speed = (_1power / 7) + (_1charge_power / 100); // Calculating speed based on power
+                var _1angle = _1vinkel * (Math.PI / 180); // Convert angle to radians
 
                 var _1initialVelocityX = _1speed * Math.cos(_1angle);
                 var _1initialVelocityY = -_1speed * Math.sin(_1angle);
@@ -453,7 +446,7 @@ window.onload = function () {
                 var _1trajectoryX = _1skudX;
                 var _1trajectoryY = _1skudY;
 
-
+                // Set stroke color based on charge power
                 if (_1charge_power >= 75) {
                     context_arc1.strokeStyle = "red";
                 } else if (_1charge_power >= 35) {
@@ -461,6 +454,7 @@ window.onload = function () {
                 } else {
                     context_arc1.strokeStyle = "green";
                 }
+
                 context_arc1.lineWidth = 2;
                 context_arc1.lineCap = "round";
                 context_arc1.beginPath();
@@ -470,14 +464,15 @@ window.onload = function () {
                     _1trajectoryX = _1skudX + _1initialVelocityX * t;
                     _1trajectoryY = _1skudY + _1initialVelocityY * t + 0.5 * gravity * Math.pow(t / 10, 2);
 
-                    context_arc1.lineTo(_1trajectoryX, _1trajectoryY); // Ensure trajectory lines are drawn
+                    context_arc1.lineTo(_1trajectoryX, _1trajectoryY); // Add calculated point to path
 
-                    if (_1trajectoryX > canvas_arc1.width || _1trajectoryY > ground_level) break;
+                    if (_1trajectoryX > canvas_arc1.width || _1trajectoryY > canvas_arc1.height || _1trajectoryY > ground_level) break;
                 }
 
-                context_arc1.stroke();
+                context_arc1.stroke(); // Draw the path
             }
-            make_ground();
+
+            make_ground(); // Redraw the ground
         }
 
         // Funktion til at animere skuddet
@@ -548,12 +543,12 @@ window.onload = function () {
                 _2drawTrajectory();
             }
             // Restrict angle within the range [-15, 88]
-            _2vinkel = Math.max(195, Math.min(92, _2vinkel));
+            _2vinkel = Math.max(92, Math.min(195, _2vinkel));
         }
 
         function _2shoot() {
             if (!_2skud) {
-                if (_2skud_cooldown < 2) {
+
                     // Calculate bullet speed and angle
                     let _2speed = (_2power / 7) + (_2charge_power / 100); // Determine bullet speed
                     let _2angle = _2vinkel * (Math.PI / 180); // Convert angle to radians
@@ -564,7 +559,7 @@ window.onload = function () {
 
                     // Set bullet as active
                     _2skud = true;
-                }
+
 
                 // Adjust damage height based on charge power
                 if (_2charge_power <= 35) {
@@ -583,8 +578,8 @@ window.onload = function () {
                 _2skudX = _2tankXmiddle;
                 _2skudY = _2tankYmiddle;
 
-                // Reset cooldowns and charge power
-                _2skud_cooldown = 100;
+
+
                 _2charge_cooldown = 10;
                 _2charge_power = 0;
 
