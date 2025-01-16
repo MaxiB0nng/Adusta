@@ -3,7 +3,7 @@ window.onload = function () {
     // Hent canvas-elementerne og deres kontekster
     var canvas_player = document.getElementById('player');
     var context_player = canvas_player.getContext('2d');
-    var canvas_arc = document.getElementById('arc');
+    var canvas_arc = document.getElementById('arc1');
     var context_arc = canvas_arc.getContext('2d');
     var canvas_ground = document.getElementById('ground');
     var context_ground = canvas_ground.getContext('2d');

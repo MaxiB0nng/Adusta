@@ -25,7 +25,7 @@ body {
     height: 700px;
 }
 
-#ground, #player, #arc, #bullet {
+#ground, #player, #arc1, #arc2, #bullet {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -48,9 +48,13 @@ body {
 #ground { z-index: 3; }
 #player { z-index: 4; }
 #bullet { z-index: 5; }
-#arc {
+#arc1 {
     background-color: grey;
     z-index: 2;
+}
+#arc2 {
+    background-color: rgba(128, 128, 128, 0); /* Semi-transparent grey */
+    z-index: 2.5; /* Between arc1 and ground */
 }
 
 /* CRT Scan lines */
