@@ -25,7 +25,7 @@ body {
     height: 700px;
 }
 
-#ground, #player, #arc1, #arc2, #bullet {
+#ground, #player, #arc1, #arc2, #bullet1 #bullet2 {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -47,7 +47,8 @@ body {
 
 #ground { z-index: 3; }
 #player { z-index: 4; }
-#bullet { z-index: 5; }
+#bullet1 { z-index: 5; }
+#bullet2 { z-index: 5; }
 #arc1 {
     background-color: grey;
     z-index: 2;
