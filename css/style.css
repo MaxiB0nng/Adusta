@@ -53,8 +53,8 @@ body {
     z-index: 2;
 }
 #arc2 {
-    background-color: rgba(128, 128, 128, 0); /* Semi-transparent grey */
-    z-index: 2.5; /* Between arc1 and ground */
+    background-color: rgba(255, 0, 0, 0); 
+    z-index: 3;
 }
 
 /* CRT Scan lines */
