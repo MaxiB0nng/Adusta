@@ -490,7 +490,7 @@ window.onload = function () {
                 // Tegn skuddet
                 context_bullet.beginPath();
                 context_bullet.arc(_1skudX, _1skudY, radius, 0, 2 * Math.PI, false);
-                context_bullet.fillStyle = 'black';
+                context_bullet.fillStyle = 'blue';
                 context_bullet.fill();
 
                 _1collisionDetection();
@@ -535,11 +535,11 @@ window.onload = function () {
         // Update angle when up or down keys are pressed
         function _2updateVinkel() {
             if (_2upPressed) {
-                _2vinkel += 0.5;
+                _2vinkel -= 0.5;
                 _2drawTrajectory();
             }
             if (_2downPressed) {
-                _2vinkel -= 0.5;
+                _2vinkel += 0.5;
                 _2drawTrajectory();
             }
             // Restrict angle within the range [-15, 88]
@@ -698,7 +698,7 @@ window.onload = function () {
                 // Draw bullet
                 context_bullet.beginPath();
                 context_bullet.arc(_2skudX, _2skudY, radius, 0, 2 * Math.PI, false);
-                context_bullet.fillStyle = 'black';
+                context_bullet.fillStyle = 'red';
                 context_bullet.fill();
 
                 _2collisionDetection(); // Check for collision
