@@ -3,8 +3,10 @@ window.onload = function () {
     // Hent canvas-elementerne og deres kontekster
     var canvas_player = document.getElementById('player');
     var context_player = canvas_player.getContext('2d');
-    var canvas_arc = document.getElementById('arc1');
-    var context_arc = canvas_arc.getContext('2d');
+    var canvas_arc1 = document.getElementById('arc1');
+    var context_arc1 = canvas_arc1.getContext('2d');
+    var canvas_arc2 = document.getElementById('arc1');
+    var context_arc2 = canvas_arc2.getContext('2d');
     var canvas_ground = document.getElementById('ground');
     var context_ground = canvas_ground.getContext('2d');
     var canvas_bullet = document.getElementById('bullet');
@@ -401,6 +403,7 @@ window.onload = function () {
                 }
             }
         }
+
         function _1collisionDetection() {
             // Check if the bullet intersects player 2's tank
             if (
@@ -433,14 +436,14 @@ window.onload = function () {
         function _1drawTrajectory() {
             _1tankXmiddle = _1tankX + 50;
             _1tankYmiddle = _1tankY + 35;
-            context_player.clearRect(0, 0, canvas_arc.width, canvas_arc.height);
+            context_player.clearRect(0, 0, canvas_arc1.width, canvas_arc1.height);
             context_player.drawImage(_1kanon, _1tankX, _1tankY);
             context_player.drawImage(_2kanon, _2tankX, _2tankY);
 
             if (!_1skud) {
                 _1skudX = _1tankXmiddle;
                 _1skudY = _1tankYmiddle;
-                context_arc.clearRect(0, 0, canvas_arc.width, canvas_arc.height);
+                context_arc1.clearRect(0, 0, canvas_arc1.width, canvas_arc1.height);
                 var _1speed = (_1power / 7) + (_1charge_power / 100); // Brug "power"-variablen til at definere fart
                 var _1angle = _1vinkel * (Math.PI / 180); // Brug "vinkel"-variablen til bane
 
@@ -452,27 +455,27 @@ window.onload = function () {
 
 
                 if (_1charge_power >= 75) {
-                    context_arc.strokeStyle = "red";
+                    context_arc1.strokeStyle = "red";
                 } else if (_1charge_power >= 35) {
-                    context_arc.strokeStyle = "orange";
+                    context_arc1.strokeStyle = "orange";
                 } else {
-                    context_arc.strokeStyle = "green";
+                    context_arc1.strokeStyle = "green";
                 }
-                context_arc.lineWidth = 2;
-                context_arc.lineCap = "round";
-                context_arc.beginPath();
-                context_arc.moveTo(_1trajectoryX, _1trajectoryY);
+                context_arc1.lineWidth = 2;
+                context_arc1.lineCap = "round";
+                context_arc1.beginPath();
+                context_arc1.moveTo(_1trajectoryX, _1trajectoryY);
 
                 for (let t = 0; t < 200; t += 1) {
                     _1trajectoryX = _1skudX + _1initialVelocityX * t;
                     _1trajectoryY = _1skudY + _1initialVelocityY * t + 0.5 * gravity * Math.pow(t / 10, 2);
 
-                    context_arc.lineTo(_1trajectoryX, _1trajectoryY); // Ensure trajectory lines are drawn
+                    context_arc1.lineTo(_1trajectoryX, _1trajectoryY); // Ensure trajectory lines are drawn
 
-                    if (_1trajectoryX > canvas_arc.width || _1trajectoryY > ground_level) break;
+                    if (_1trajectoryX > canvas_arc1.width || _1trajectoryY > ground_level) break;
                 }
 
-                context_arc.stroke();
+                context_arc1.stroke();
             }
             make_ground();
         }
@@ -486,7 +489,7 @@ window.onload = function () {
 
                 context_bullet.clearRect(0, 0, canvas_bullet.width, canvas_bullet.height);
                 // Fjern rød bane, hvor skuddet er
-                context_arc.clearRect(_1skudX - radius, _1skudY - radius, radius * 2, radius * 2);
+                context_arc1.clearRect(_1skudX - radius, _1skudY - radius, radius * 2, radius * 2);
 
 
                 // Tegn skuddet
@@ -644,14 +647,14 @@ window.onload = function () {
         function _2drawTrajectory() {
             _2tankXmiddle = _2tankX + 50;
             _2tankYmiddle = _2tankY + 35;
-            context_player.clearRect(0, 0, canvas_arc.width, canvas_arc.height);
+            context_player.clearRect(0, 0, canvas_arc2.width, canvas_arc2.height);
             context_player.drawImage(_1kanon, _1tankX, _1tankY);
             context_player.drawImage(_2kanon, _2tankX, _2tankY);
 
             if (!_2skud) {
                 _2skudX = _2tankXmiddle;
                 _2skudY = _2tankYmiddle;
-                context_arc.clearRect(0, 0, canvas_arc.width, canvas_arc.height);
+                context_arc2.clearRect(0, 0, canvas_arc2.width, canvas_arc2.height);
 
                 // Calculate trajectory
                 let _2speed = (_2power / 7) + (_2charge_power / 100);
@@ -664,26 +667,26 @@ window.onload = function () {
 
                 // Trajectory color based on charge power
                 if (_2charge_power >= 75) {
-                    context_arc.strokeStyle = "red";
+                    context_arc2.strokeStyle = "red";
                 } else if (_2charge_power >= 35) {
-                    context_arc.strokeStyle = "orange";
+                    context_arc2.strokeStyle = "orange";
                 } else {
-                    context_arc.strokeStyle = "green";
+                    context_arc2.strokeStyle = "green";
                 }
-                context_arc.lineWidth = 2;
-                context_arc.beginPath();
-                context_arc.moveTo(_2trajectoryX, _2trajectoryY);
+                context_arc2.lineWidth = 2;
+                context_arc2.beginPath();
+                context_arc2.moveTo(_2trajectoryX, _2trajectoryY);
 
                 // Simulate trajectory points
                 for (let t = 0; t < 200; t += 1) {
                     _2trajectoryX = _2skudX + _2initialVelocityX * t;
                     _2trajectoryY = _2skudY + _2initialVelocityY * t + 0.5 * gravity * Math.pow(t / 10, 2);
 
-                    context_arc.lineTo(_2trajectoryX, _2trajectoryY);
+                    context_arc2.lineTo(_2trajectoryX, _2trajectoryY);
 
-                    if (_2trajectoryX > canvas_arc.width || _2trajectoryY > ground_level) break;
+                    if (_2trajectoryX > canvas_arc2.width || _2trajectoryY > ground_level) break;
                 }
-                context_arc.stroke();
+                context_arc2.stroke();
             }
             make_ground();
         }
@@ -695,7 +698,7 @@ window.onload = function () {
                 _2skudY += _2velocityY; // Update vertical position
 
                 context_bullet.clearRect(0, 0, canvas_bullet.width, canvas_bullet.height);
-                context_arc.clearRect(_2skudX - radius, _2skudY - radius, radius * 2, radius * 2);
+                context_arc2.clearRect(_2skudX - radius, _2skudY - radius, radius * 2, radius * 2);
 
                 // Draw bullet
                 context_bullet.beginPath();
