@@ -86,6 +86,14 @@ body {
     border-radius: 50%;
     box-shadow: 0 0 10px #f00;
     z-index: 9999;
+    animation: powerBlink 4s infinite;
+}
+
+@keyframes powerBlink {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px #f00; }
+    50% { opacity: 0.7; box-shadow: 0 0 5px #f00; }
+    51% { opacity: 0.3; box-shadow: 0 0 15px #f00; }
+    52% { opacity: 0.7; box-shadow: 0 0 5px #f00; }
 }
 
 /* Vignette effect */
@@ -113,6 +121,22 @@ body {
     z-index: 99;
 }
 
+.controls::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        transparent 50%,
+        rgba(0, 255, 0, 0.02) 50%
+    );
+    background-size: 100% 4px;
+    pointer-events: none;
+    z-index: -1;
+}
+
 .player1, .player2 {
     text-align: center;
     padding: 15px;
@@ -120,12 +144,82 @@ body {
     border: 2px solid #0f0;
     border-radius: 10px;
     min-width: 250px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    animation: pulse 4s ease-in-out infinite;
+}
+
+.player1::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(0, 255, 0, 0.15),
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: shine1 4.5s ease-in-out infinite;
+}
+
+.player2::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(0, 255, 0, 0.15),
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: shine2 3.7s ease-in-out infinite;
+}
+
+@keyframes shine1 {
+    0%, 100% {
+        left: -50%;
+        opacity: 0;
+    }
+    50% {
+        left: 100%;
+        opacity: 1;
+    }
+}
+
+@keyframes shine2 {
+    0%, 100% {
+        left: -50%;
+        opacity: 0;
+    }
+    50% {
+        left: 100%;
+        opacity: 0.8;
+    }
+}
+
+.player1:hover, .player2:hover {
+    border-color: #0f0;
+    box-shadow: 
+        0 0 10px #0f0,
+        0 0 20px #0f0,
+        inset 0 0 5px #0f0;
+    transform: translateY(-2px);
 }
 
 .controls h2 {
     color: #0f0;
     font-size: 18px;
     margin-bottom: 10px;
+    animation: textPulse 2s infinite;
     text-shadow: 
         0 0 5px #0f0,
         0 0 10px #0f0;
@@ -139,6 +233,20 @@ body {
         0 0 3px #0f0,
         0 0 6px #0f0;
     letter-spacing: 1px;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+@keyframes textPulse {
+    0%, 100% { 
+        text-shadow: 0 0 5px #0f0, 0 0 10px #0f0;
+    }
+    50% { 
+        text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
+    }
 }
 
 @media screen and (max-width: 1524px) {
