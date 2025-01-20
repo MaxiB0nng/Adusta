@@ -22,16 +22,17 @@ window.onload = function () {
 
 
     //player 1 variables
-    var _1kanon = new Image();
+    var _1tank = new Image();
     var _1velocityX = 0; // Vandret hastighed
     var _1velocityY = 0; // Lodret hastighed
     var _1tankX = 50; // Tankens start-position (X)
-    var _1tankY = 600; // Tankens faste start-position (Y)
-    var _1tankXmiddle = _1tankX + 50; // Midten af tanken (X)
-    var _1tankYmiddle = _1tankY + 35; // Midten af tanken (Y)
+    var _1tankY = 645; // Tankens faste start-position (Y)
+    var _1tankXmiddle = _1tankX + 17;
+    var _1tankYmiddle = _1tankY + 27 ;
     var _1movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
     var _1skud = false; // Holder styr på om et skud er aktivt
     var _1charge_cooldown = 10; //såre for at der en buffer mellem at charge og at skyde
+    var _1shoot_cooldown = 50; //såre for at der en buffer for skudet
     var _1skudX = _1tankX; // Starter X-position for skud
     var _1skudY = _1tankY; // Starter Y-position for skud
     var _1power = 80; // Hvor kraftig kanonen er
@@ -47,16 +48,17 @@ window.onload = function () {
     let _1chargePressed = false;
 
     // player 2 variables
-    var _2kanon = new Image();
+    var _2tank = new Image();
     var _2velocityX = 0; // Vandret hastighed
     var _2velocityY = 0; // Lodret hastighed
     var _2tankX = 1350; // Tankens start-position (X)
-    var _2tankY = 600; // Tankens faste start-position (Y)
-    var _2tankXmiddle = _2tankX + 50; // Midten af tanken (X)
-    var _2tankYmiddle = _2tankY + 35; // Midten af tanken (Y)
+    var _2tankY = 645; // Tankens faste start-position (Y)
+    var _2tankXmiddle = _2tankX + 17;
+    var _2tankYmiddle = _2tankY + 27;
     var _2movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
     var _2skud = false; // Holder styr på om et skud er aktivt
     var _2charge_cooldown = 10; //såre for at der en buffer mellem at charge og at skyde
+    var _2shoot_cooldown = 50; //såre for at der en buffer for skudet
     var _2skudX = _2tankX; // Starter X-position for skud
     var _2skudY = _2tankY; // Starter Y-position for skud
     var _2power = 80; // Hvor kraftig kanonen er
@@ -87,8 +89,8 @@ window.onload = function () {
     ];
     var firstpilar = _1start + pillars[0].width;
 
-    _1kanon.src = "img/kanon.png";
-    _2kanon.src = "img/kanon.png";
+    _1tank.src = "img/tank.png";
+    _2tank.src = "img/tank.png";
 
 
     function make_ground() {
@@ -141,13 +143,13 @@ window.onload = function () {
         hitboxes.forEach((box) => {
             // Handle tank collision
             if (
-                _1tankX + _1kanon.width > box.x &&
+                _1tankX + _1tank.width > box.x &&
                 _1tankX < box.x + box.width &&
-                _1tankY + _1kanon.height > box.y &&
+                _1tankY + _1tank.height > box.y &&
                 _1tankY < box.y + box.height
             ) {
-                if (_1tankX + _1kanon.width / 2 < box.x + box.width / 2) {
-                    _1tankX = box.x - _1kanon.width; // Push tank to the left of the hitbox
+                if (_1tankX + _1tank.width / 2 < box.x + box.width / 2) {
+                    _1tankX = box.x - _1tank.width; // Push tank to the left of the hitbox
                 } else {
                     _1tankX = box.x + box.width; // Push tank to the right of the hitbox
                 }
@@ -162,14 +164,15 @@ window.onload = function () {
                 _1skudY - radius < box.y + box.height
             ) {
                 _1skud = false; // Mark bullet as inactive
-                _1skudX = _1tankX + 25; // Reset bullet position
-                _1skudY = _1tankY;
+                _1skudX = _1tankXmiddle; // Reset bullet position
+                _1skudY = _1tankYmiddle;
                 _1velocityX = 0;
                 _1velocityY = 0;
+                _1shoot_cooldown += 50;
                 context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
                 context_bullet1.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                context_player.drawImage(_1kanon, _1tankX, _1tankY);
-                context_player.drawImage(_2kanon, _2tankX, _2tankY);
+                context_player.drawImage(_1tank, _1tankX, _1tankY);
+                context_player.drawImage(_2tank, _2tankX, _2tankY);
 
 
                 // Find the pillar that was hit, based on the hitbox
@@ -192,13 +195,13 @@ window.onload = function () {
             // Handle Player 2 tank collision with hitboxes
             hitboxes.forEach((box) => {
                 if (
-                    _2tankX + _2kanon.width > box.x &&
+                    _2tankX + _2tank.width > box.x &&
                     _2tankX < box.x + box.width &&
-                    _2tankY + _2kanon.height > box.y &&
+                    _2tankY + _2tank.height > box.y &&
                     _2tankY < box.y + box.height
                 ) {
-                    if (_2tankX + _2kanon.width / 2 < box.x + box.width / 2) {
-                        _2tankX = box.x - _2kanon.width; // Skub spiller 2 til venstre for hitbox
+                    if (_2tankX + _2tank.width / 2 < box.x + box.width / 2) {
+                        _2tankX = box.x - _2tank.width; // Skub spiller 2 til venstre for hitbox
                     } else {
                         _2tankX = box.x + box.width; // Skub spiller 2 til højre for hitbox
                     }
@@ -214,15 +217,15 @@ window.onload = function () {
                     _2skudY - radius < box.y + box.height
                 ) {
                     _2skud = false; // Markér spiller 2's skud som inaktivt
-                    _2skudX = _2tankX + 25; // Nulstil skuddets position
-                    _2skudY = _2tankY;
+                    _2skudX = _2tankXmiddle; // Reset bullet position
+                    _2skudY = _2tankYmiddle;
                     _2velocityX = 0;
                     _2velocityY = 0;
-
+                    _2shoot_cooldown += 50;
                     context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
                     context_bullet2.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                    context_player.drawImage(_1kanon, _1tankX, _1tankY);
-                    context_player.drawImage(_2kanon, _2tankX, _2tankY);
+                    context_player.drawImage(_1tank, _1tankX, _1tankY);
+                    context_player.drawImage(_2tank, _2tankX, _2tankY);
 
 
                     // Find den ramte pillar baseret på hitboxen
@@ -312,10 +315,22 @@ window.onload = function () {
             _1charge_cooldown = Math.max(0, _1charge_cooldown - 1); // Ensure cooldown doesn't go below 0
 
         }
+        if (_1shoot_cooldown > 0) {
+            _1shoot_cooldown = Math.max(0, _1shoot_cooldown - 1); // Ensure cooldown doesn't go below 0
+        }
         if (_2charge_cooldown > 0) {
             _2charge_cooldown = Math.max(0, _2charge_cooldown - 1); // Ensure cooldown doesn't go below 0
 
         }
+        if (_2shoot_cooldown > 0) {
+            _2shoot_cooldown = Math.max(0, _2shoot_cooldown - 1); // Ensure cooldown doesn't go below 0
+
+        }
+        _1tankXmiddle = _1tankX + 17;
+        _1tankYmiddle = _1tankY + 27 ;
+        _2tankXmiddle = _2tankX + 17;
+        _2tankYmiddle = _2tankY + 27;
+
     }, 10);
 
     //player 1
@@ -341,6 +356,7 @@ window.onload = function () {
 
         function _1shoot() {
             if (!_1skud) {
+                if (_1shoot_cooldown === 0) {
 
                     // Beregn skudhastigheden og vinklen
                     var _1speed = (_1power / 7) + (_1charge_power / 100); // Brug "power"-variablen til at definere fart
@@ -350,25 +366,28 @@ window.onload = function () {
                     _1skud = true;
 
 
-                if (_1charge_power <= 35) {
-                    _1damageHeight = 50;
-                }
-                if (_1charge_power >= 35) {
-                    _1damageHeight = 65;
-                }
-                if (_1charge_power >= 75) {
-                    _1damageHeight = 80;
-                }
+                    if (_1charge_power <= 35) {
+                        _1damageHeight = 50;
+                    }
+                    if (_1charge_power >= 35) {
+                        _1damageHeight = 65;
+                    }
+                    if (_1charge_power >= 75) {
+                        _1damageHeight = 80;
+                    }
 
-                // Opdater position til midten af tanken
-                _1tankXmiddle = _1tankX + 50;
-                _1tankYmiddle = _1tankY + 35;
-                _1skudX = _1tankXmiddle;
-                _1skudY = _1tankYmiddle;
-                _1charge_cooldown = 0;
-                _1charge_cooldown += 10;
-                _1charge_power = 0;
-                _1animate();
+                    // Opdater position til midten af tanken
+                    _1tankXmiddle = _1tankX + 50;
+                    _1tankYmiddle = _1tankY + 35;
+                    _1skudX = _1tankXmiddle;
+                    _1skudY = _1tankYmiddle;
+                    _1charge_cooldown = 0;
+                    _1charge_cooldown += 10;
+                    _1charge_power = 0;
+
+                    _1animate();
+
+                }
             }
         }
 
@@ -394,8 +413,8 @@ window.onload = function () {
             if (_1rightPressed) {
                 _1tankX += _1movementSpeed;
                 _1drawTrajectory();
-                if (_1tankX + _1kanon.width > canvas_player.width) {
-                    _1tankX = canvas_player.width - _1kanon.width; // Undgå, at tanken forlader højre grænse
+                if (_1tankX + _1tank.width > canvas_player.width) {
+                    _1tankX = canvas_player.width - _1tank.width; // Undgå, at tanken forlader højre grænse
                 }
             }
         }
@@ -405,9 +424,9 @@ window.onload = function () {
             if (
                 _1skud && // Bullet must be active
                 _1skudX + radius > _2tankX && // Check if bullet is within the right boundary of player 2
-                _1skudX - radius < _2tankX + _2kanon.width && // Check if bullet is within the left boundary of player 2
+                _1skudX - radius < _2tankX + _2tank.width && // Check if bullet is within the left boundary of player 2
                 _1skudY + radius > _2tankY && // Check if bullet is below the top boundary of player 2
-                _1skudY - radius < _2tankY + _2kanon.height // Check if bullet is above the bottom boundary of player 2
+                _1skudY - radius < _2tankY + _2tank.height // Check if bullet is above the bottom boundary of player 2
             ) {
                 // Collision detected
                 _2playerhp -= 25; // Reduce Player 2's HP by 25
@@ -415,29 +434,28 @@ window.onload = function () {
 
                 // Reset bullet state
                 _1skud = false;
-                _1skudX = _1tankX + 25; // Reset bullet position to player 1's tank
-                _1skudY = _1tankY;
+                _1skudX = _1tankXmiddle; // Reset bullet position to player 1's tank
+                _1skudY = _1tankYmiddle;
                 _1velocityX = 0; // Reset velocity
                 _1velocityY = 0;
+                _1shoot_cooldown += 50;
 
                 // Clear bullet and redraw players
                 context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
                 context_bullet1.clearRect(0, 0, canvas_bullet1.width, canvas_bullet1.height);
-                context_player.drawImage(_1kanon, _1tankX, _1tankY);
-                context_player.drawImage(_2kanon, _2tankX, _2tankY);
+                context_player.drawImage(_1tank, _1tankX, _1tankY);
+                context_player.drawImage(_2tank, _2tankX, _2tankY);
             }
         }
 
         // Funktion til at tegne banen for skuddet
         function _1drawTrajectory() {
-            _1tankXmiddle = _1tankX + 50;
-            _1tankYmiddle = _1tankY + 35;
 
             context_arc1.clearRect(0, 0, canvas_arc1.width, canvas_arc1.height); // Ensure arc canvas is cleared first
             context_player.clearRect(0, 0, canvas_player.width, canvas_player.height); // Ensure player canvas is cleared
 
-            context_player.drawImage(_1kanon, _1tankX, _1tankY);
-            context_player.drawImage(_2kanon, _2tankX, _2tankY);
+            context_player.drawImage(_1tank, _1tankX, _1tankY);
+            context_player.drawImage(_2tank, _2tankX, _2tankY);
 
             if (!_1skud) {
                 _1skudX = _1tankXmiddle;
@@ -484,6 +502,7 @@ window.onload = function () {
         // Funktion til at animere skuddet
         function _1animate() {
             if (_1skud) {
+
                 _1skudX += _1velocityX; // Opdater vandret position
                 _1velocityY += gravity / 100; // Opdater lodret hastighed grundet tyngdekraft
                 _1skudY += _1velocityY; // Opdater lodret position
@@ -507,11 +526,12 @@ window.onload = function () {
                     _1skudY = _1tankY;
                     _1velocityX = 0;
                     _1velocityY = 0;
+                    _1shoot_cooldown += 50;
                     _1skud = false; // Markér skud som reset
                 } else {
                     requestAnimationFrame(_1animate); // Fortsæt animationen
                 }
-                // Tegn kanonen igen ved dens nuværende position
+                // Tegn tanken igen ved dens nuværende position
 
                 _1drawTrajectory();
             }
@@ -554,6 +574,7 @@ window.onload = function () {
 
         function _2shoot() {
             if (!_2skud) {
+                if (_2shoot_cooldown === 0) {
 
                     // Calculate bullet speed and angle
                     let _2speed = (_2power / 7) + (_2charge_power / 100); // Determine bullet speed
@@ -567,29 +588,29 @@ window.onload = function () {
                     _2skud = true;
 
 
-                // Adjust damage height based on charge power
-                if (_2charge_power <= 35) {
-                    _2damageHeight = 50;
+                    // Adjust damage height based on charge power
+                    if (_2charge_power <= 35) {
+                        _2damageHeight = 50;
+                    }
+                    if (_2charge_power >= 35) {
+                        _2damageHeight = 65;
+                    }
+                    if (_2charge_power >= 75) {
+                        _2damageHeight = 80;
+                    }
+
+                    // Update bullet's starting position (center of player 2's tank)
+                    _2tankXmiddle = _2tankX + 50;
+                    _2tankYmiddle = _2tankY + 35;
+                    _2skudX = _2tankXmiddle;
+                    _2skudY = _2tankYmiddle;
+
+
+                    _2charge_cooldown = 10;
+                    _2charge_power = 0;
+
+                    _2animate(); // Start bullet animation
                 }
-                if (_2charge_power >= 35) {
-                    _2damageHeight = 65;
-                }
-                if (_2charge_power >= 75) {
-                    _2damageHeight = 80;
-                }
-
-                // Update bullet's starting position (center of player 2's tank)
-                _2tankXmiddle = _2tankX + 50;
-                _2tankYmiddle = _2tankY + 35;
-                _2skudX = _2tankXmiddle;
-                _2skudY = _2tankYmiddle;
-
-
-
-                _2charge_cooldown = 10;
-                _2charge_power = 0;
-
-                _2animate(); // Start bullet animation
             }
         }
 
@@ -614,8 +635,8 @@ window.onload = function () {
             if (_2rightPressed) {
                 _2tankX += _2movementSpeed;
                 _2drawTrajectory();
-                if (_2tankX + _2kanon.width > canvas_player.width) {
-                    _2tankX = canvas_player.width - _2kanon.width; // Prevent tank from leaving the right boundary
+                if (_2tankX + _2tank.width > canvas_player.width) {
+                    _2tankX = canvas_player.width - _2tank.width; // Prevent tank from leaving the right boundary
                 }
             }
         }
@@ -625,9 +646,9 @@ window.onload = function () {
             if (
                 _2skud && // Bullet must be active
                 _2skudX + radius > _1tankX && // Check if bullet is within the right boundary of player 1
-                _2skudX - radius < _1tankX + _1kanon.width && // Check if bullet is within the left boundary of player 1
+                _2skudX - radius < _1tankX + _1tank.width && // Check if bullet is within the left boundary of player 1
                 _2skudY + radius > _1tankY && // Check if bullet is below the top boundary of player 1
-                _2skudY - radius < _1tankY + _1kanon.height // Check if bullet is above the bottom boundary of player 1
+                _2skudY - radius < _1tankY + _1tank.height // Check if bullet is above the bottom boundary of player 1
             ) {
                 // Collision detected
                 _1playerhp -= 25; // Reduce Player 1's HP by 25
@@ -639,21 +660,23 @@ window.onload = function () {
                 _2skudY = _2tankY;
                 _2velocityX = 0; // Reset velocity
                 _2velocityY = 0;
+                _2shoot_cooldown += 50;
 
                 // Clear bullet and redraw players
                 context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
                 context_bullet2.clearRect(0, 0, canvas_bullet2.width, canvas_bullet2.height);
-                context_player.drawImage(_1kanon, _1tankX, _1tankY);
-                context_player.drawImage(_2kanon, _2tankX, _2tankY);
+                context_player.drawImage(_1tank, _1tankX, _1tankY);
+                context_player.drawImage(_2tank, _2tankX, _2tankY);
             }
         }
 
         function _2drawTrajectory() {
-            _2tankXmiddle = _2tankX + 50;
-            _2tankYmiddle = _2tankY + 35;
+            _2tankXmiddle = _2tankX + 17;
+            _2tankYmiddle = _2tankY + 27;
+
             context_player.clearRect(0, 0, canvas_arc2.width, canvas_arc2.height);
-            context_player.drawImage(_1kanon, _1tankX, _1tankY);
-            context_player.drawImage(_2kanon, _2tankX, _2tankY);
+            context_player.drawImage(_1tank, _1tankX, _1tankY);
+            context_player.drawImage(_2tank, _2tankX, _2tankY);
 
             if (!_2skud) {
                 _2skudX = _2tankXmiddle;
@@ -719,6 +742,7 @@ window.onload = function () {
                     _2velocityX = 0;
                     _2velocityY = 0;
                     _2skud = false;
+                    _2shoot_cooldown += 50;
                 } else {
                     requestAnimationFrame(_2animate); // Continue animation
                 }
@@ -741,15 +765,13 @@ window.onload = function () {
         }
     }
 
-
     function gameLoop() {
         // Opdater positioner for spillere
         player1();
         player2();
 
-        context_player.drawImage(_1kanon, _1tankX, _1tankY);
-        context_player.drawImage(_2kanon, _2tankX, _2tankY);
+        context_player.drawImage(_1tank, _1tankX, _1tankY);
+        context_player.drawImage(_2tank, _2tankX, _2tankY);
     }
 
 }
-
