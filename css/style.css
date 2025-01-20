@@ -25,7 +25,7 @@ body {
     height: 700px;
 }
 
-#ground, #player, #arc1, #arc2, #bullet1 #bullet2 {
+#ground, #player, #arc1, #arc2, #bullet1, #bullet2 {
     position: absolute;
     top: 50%;
     left: 50%;
