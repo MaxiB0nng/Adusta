@@ -9,8 +9,10 @@ window.onload = function () {
     var context_arc2 = canvas_arc2.getContext('2d');
     var canvas_ground = document.getElementById('ground');
     var context_ground = canvas_ground.getContext('2d');
-    var canvas_bullet = document.getElementById('bullet');
-    var context_bullet = canvas_bullet.getContext('2d');
+    var canvas_bullet1 = document.getElementById('bullet1');
+    var context_bullet1 = canvas_bullet1.getContext('2d');
+    var canvas_bullet2 = document.getElementById('bullet2');
+    var context_bullet2 = canvas_bullet2.getContext('2d');
 
 
     // Initialiser forskellige variabler
@@ -29,11 +31,11 @@ window.onload = function () {
     var _1tankYmiddle = _1tankY + 35; // Midten af tanken (Y)
     var _1movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
     var _1skud = false; // Holder styr på om et skud er aktivt
-    var _1charge_cooldown = 10 //såre for at der en buffer mellem at charge og at skyde
+    var _1charge_cooldown = 10; //såre for at der en buffer mellem at charge og at skyde
     var _1skudX = _1tankX; // Starter X-position for skud
     var _1skudY = _1tankY; // Starter Y-position for skud
     var _1power = 80; // Hvor kraftig kanonen er
-    var _1charge_power = 0 //hvor meget kraft exstra
+    var _1charge_power = 0; //hvor meget kraft exstra
     var _1vinkel = 45; // Vinkel på skud (i grader)
     var _1damageHeight = 60;
     var _1playerhp = 100;
@@ -54,11 +56,11 @@ window.onload = function () {
     var _2tankYmiddle = _2tankY + 35; // Midten af tanken (Y)
     var _2movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
     var _2skud = false; // Holder styr på om et skud er aktivt
-    var _2charge_cooldown = 10 //såre for at der en buffer mellem at charge og at skyde
+    var _2charge_cooldown = 10; //såre for at der en buffer mellem at charge og at skyde
     var _2skudX = _2tankX; // Starter X-position for skud
     var _2skudY = _2tankY; // Starter Y-position for skud
     var _2power = 80; // Hvor kraftig kanonen er
-    var _2charge_power = 0 //hvor meget kraft exstra
+    var _2charge_power = 0; //hvor meget kraft exstra
     var _2vinkel = 135; // Vinkel på skud (i grader)
     var _2damageHeight = 60;
     var _2playerhp = 100;
@@ -165,7 +167,7 @@ window.onload = function () {
                 _1velocityX = 0;
                 _1velocityY = 0;
                 context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                context_bullet.clearRect(0, 0, canvas_player.width, canvas_player.height);
+                context_bullet1.clearRect(0, 0, canvas_player.width, canvas_player.height);
                 context_player.drawImage(_1kanon, _1tankX, _1tankY);
                 context_player.drawImage(_2kanon, _2tankX, _2tankY);
 
@@ -218,7 +220,9 @@ window.onload = function () {
                     _2velocityY = 0;
 
                     context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                    context_bullet.clearRect(0, 0, canvas_player.width, canvas_player.height);
+                    context_bullet2.clearRect(0, 0, canvas_player.width, canvas_player.height);
+                    context_player.drawImage(_1kanon, _1tankX, _1tankY);
+                    context_player.drawImage(_2kanon, _2tankX, _2tankY);
 
 
                     // Find den ramte pillar baseret på hitboxen
@@ -416,7 +420,7 @@ window.onload = function () {
 
                 // Clear bullet and redraw players
                 context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                context_bullet.clearRect(0, 0, canvas_bullet.width, canvas_bullet.height);
+                context_bullet1.clearRect(0, 0, canvas_bullet1.width, canvas_bullet1.height);
                 context_player.drawImage(_1kanon, _1tankX, _1tankY);
                 context_player.drawImage(_2kanon, _2tankX, _2tankY);
             }
@@ -482,16 +486,16 @@ window.onload = function () {
                 _1velocityY += gravity / 100; // Opdater lodret hastighed grundet tyngdekraft
                 _1skudY += _1velocityY; // Opdater lodret position
 
-                context_bullet.clearRect(0, 0, canvas_bullet.width, canvas_bullet.height);
+                context_bullet1.clearRect(0, 0, canvas_bullet1.width, canvas_bullet1.height);
                 // Fjern rød bane, hvor skuddet er
                 context_arc1.clearRect(_1skudX - radius, _1skudY - radius, radius * 2, radius * 2);
 
 
                 // Tegn skuddet
-                context_bullet.beginPath();
-                context_bullet.arc(_1skudX, _1skudY, radius, 0, 2 * Math.PI, false);
-                context_bullet.fillStyle = 'blue';
-                context_bullet.fill();
+                context_bullet1.beginPath();
+                context_bullet1.arc(_1skudX, _1skudY, radius, 0, 2 * Math.PI, false);
+                context_bullet1.fillStyle = 'blue';
+                context_bullet1.fill();
 
                 _1collisionDetection();
 
@@ -633,7 +637,7 @@ window.onload = function () {
 
                 // Clear bullet and redraw players
                 context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                context_bullet.clearRect(0, 0, canvas_bullet.width, canvas_bullet.height);
+                context_bullet2.clearRect(0, 0, canvas_bullet2.width, canvas_bullet2.height);
                 context_player.drawImage(_1kanon, _1tankX, _1tankY);
                 context_player.drawImage(_2kanon, _2tankX, _2tankY);
             }
@@ -692,14 +696,14 @@ window.onload = function () {
                 _2velocityY += gravity / 100; // Update vertical velocity due to gravity
                 _2skudY += _2velocityY; // Update vertical position
 
-                context_bullet.clearRect(0, 0, canvas_bullet.width, canvas_bullet.height);
+                context_bullet2.clearRect(0, 0, canvas_bullet2.width, canvas_bullet2.height);
                 context_arc2.clearRect(_2skudX - radius, _2skudY - radius, radius * 2, radius * 2);
 
                 // Draw bullet
-                context_bullet.beginPath();
-                context_bullet.arc(_2skudX, _2skudY, radius, 0, 2 * Math.PI, false);
-                context_bullet.fillStyle = 'red';
-                context_bullet.fill();
+                context_bullet2.beginPath();
+                context_bullet2.arc(_2skudX, _2skudY, radius, 0, 2 * Math.PI, false);
+                context_bullet2.fillStyle = 'red';
+                context_bullet2.fill();
 
                 _2collisionDetection(); // Check for collision
 
