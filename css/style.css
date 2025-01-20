@@ -77,15 +77,15 @@ body {
 /* TV Power LED */
 #wrapper::after {
     content: '';
-    position: absolute;
-    top: 15px;
+    position: fixed;  /* Changed from absolute to fixed */
+    bottom: 105px;
     right: 15px;
     width: 12px;
     height: 12px;
     background: #f00;
     border-radius: 50%;
     box-shadow: 0 0 10px #f00;
-    z-index: 8;
+    z-index: 9999;
 }
 
 /* Vignette effect */
