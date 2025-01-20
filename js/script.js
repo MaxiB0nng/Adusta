@@ -374,10 +374,12 @@ window.onload = function () {
 
 
         function _1charge() {
-            if (_1charge_cooldown < 2) {
-                if (_1charge_power < 100) {
-                    _1charge_power += 1;
-                    _1drawTrajectory();
+            if (!_1skud) {
+                if (_1charge_cooldown < 2) {
+                    if (_1charge_power < 100) {
+                        _1charge_power += 1;
+                        _1drawTrajectory();
+                    }
                 }
             }
         }
@@ -592,10 +594,13 @@ window.onload = function () {
         }
 
         function _2charge() {
-            if (_2charge_cooldown < 2) {
-                if (_2charge_power < 100) {
-                    _2charge_power += 1;
-                    _2drawTrajectory();
+            if (!_2skud) {
+
+                if (_2charge_cooldown < 2) {
+                    if (_2charge_power < 100) {
+                        _2charge_power += 1;
+                        _2drawTrajectory();
+                    }
                 }
             }
         }
