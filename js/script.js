@@ -40,6 +40,7 @@ window.onload = function () {
     var _1vinkel = 45; // Vinkel på skud (i grader)
     var _1damageHeight = 60;
     var _1playerhp = 100;
+    let _1player_alive = true;
     let _1upPressed = false;
     let _1downPressed = false;
     let _1rightPressed = false;
@@ -330,10 +331,7 @@ window.onload = function () {
             _2shoot_cooldown = Math.max(0, _2shoot_cooldown - 1); // Ensure cooldown doesn't go below 0
 
         }
-        _1tankXmiddle = _1tankX + 17;
-        _1tankYmiddle = _1tankY + 27 ;
-        _2tankXmiddle = _2tankX + 17;
-        _2tankYmiddle = _2tankY + 27;
+
 
     }, 10);
 
@@ -432,7 +430,10 @@ window.onload = function () {
             ) {
                 // Collision detected
                 _2playerhp -= 25; // Reduce Player 2's HP by 25
-                console.log("Collision detected! Player 2 HP:", _2playerhp);
+                console.log("Player 2 HP:", _2playerhp);
+                if (_1playerhp <= 0) {
+                    _1player_alive = true;
+                }
 
                 // Reset bullet state
                 _1skud = false;
