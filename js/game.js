@@ -800,8 +800,6 @@ window.onload = function () {
 
         context_player.drawImage(_1tank, _1tankX, _1tankY);
         context_player.drawImage(_2tank, _2tankX, _2tankY);
-
-        requestAnimationFrame(gameLoop);
     }
 
 }
