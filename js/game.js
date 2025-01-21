@@ -47,6 +47,7 @@ window.onload = function () {
     let _1leftPressed = false;
     let _1shootPressed = false;
     let _1chargePressed = false;
+    let _1player_win = false;
 
     // player 2 variables
     var _2tank = new Image();
@@ -67,12 +68,14 @@ window.onload = function () {
     var _2vinkel = 135; // Vinkel på skud (i grader)
     var _2damageHeight = 60;
     var _2playerhp = 100;
+    let _2player_alive = true;
     let _2upPressed = false;
     let _2rightPressed = false;
     let _2downPressed = false;
     let _2leftPressed = false;
     let _2shootPressed = false;
     let _2chargePressed = false;
+    let _2player_win = false;
 
 
     var ground_level = 680;
@@ -432,7 +435,7 @@ window.onload = function () {
                 _2playerhp -= 25; // Reduce Player 2's HP by 25
                 console.log("Player 2 HP:", _2playerhp);
                 if (_1playerhp <= 0) {
-                    _1player_alive = true;
+                    _1player_alive = false;
                 }
 
                 // Reset bullet state
@@ -453,6 +456,9 @@ window.onload = function () {
 
         // Funktion til at tegne banen for skuddet
         function _1drawTrajectory() {
+
+            _1tankXmiddle = _1tankX + 17;
+            _1tankYmiddle = _1tankY + 27;
 
             context_player.clearRect(0, 0, canvas_player.width, canvas_player.height); // Ensure player canvas is cleared
 
@@ -655,7 +661,10 @@ window.onload = function () {
             ) {
                 // Collision detected
                 _1playerhp -= 25; // Reduce Player 1's HP by 25
-                console.log("Collision detected! Player 1 HP:", _1playerhp);
+                console.log("Player 1 HP:", _1playerhp);
+                if (_2playerhp <= 0) {
+                    _2player_alive = false;
+                }
 
                 // Reset bullet state
                 _2skud = false;
@@ -689,6 +698,7 @@ window.onload = function () {
                 // Calculate trajectory
                 let _2speed = (_2power / 7) + (_2charge_power / 100);
                 let _2angle = _2vinkel * (Math.PI / 180);
+
                 let _2initialVelocityX = _2speed * Math.cos(_2angle);
                 let _2initialVelocityY = -_2speed * Math.sin(_2angle);
 
@@ -768,13 +778,30 @@ window.onload = function () {
         }
     }
 
+
     function gameLoop() {
         // Opdater positioner for spillere
-        player1();
-        player2();
+        if (_1player_win === false) {
+            player1();
+        }
+        if (_2player_win === false) {
+            player2();
+        }
+
+
+
+        if (_1player_alive === false) {
+            _2player_win = true;
+        }
+        if (_2player_alive === false) {
+            _1player_win = true;
+        }
+
 
         context_player.drawImage(_1tank, _1tankX, _1tankY);
         context_player.drawImage(_2tank, _2tankX, _2tankY);
+
+        requestAnimationFrame(gameLoop);
     }
 
 }
