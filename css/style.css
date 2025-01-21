@@ -78,7 +78,7 @@ body {
 #wrapper::after {
     content: '';
     position: fixed;  /* Changed from absolute to fixed */
-    bottom: 105px;
+    bottom: 305px;
     right: 15px;
     width: 12px;
     height: 12px;
@@ -148,6 +148,11 @@ body {
     overflow: hidden;
     transition: all 0.3s ease;
     animation: pulse 4s ease-in-out infinite;
+    box-shadow: 
+        0 0 2px var(--color-neon-green),
+        0 0 4px var(--color-neon-green),
+        0 0 8px var(--color-neon-green),
+        inset 0 0 8px rgba(0, 255, 0, 0.3);
 }
 
 .player1::after {
@@ -182,6 +187,40 @@ body {
     );
     transform: rotate(45deg);
     animation: shine2 3.7s ease-in-out infinite;
+}
+
+.keyboard-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.movement-keys {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.wasd-row {
+    display: flex;
+    gap: 5px;
+}
+
+.key {
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid #0f0;
+    padding: 10px;
+    border-radius: 5px;
+    min-width: 30px;
+    margin: 2px;
+}
+
+.key-press {
+    background: rgba(0, 255, 0, 0.3);
+    transform: scale(0.95);
+    transition: all 0.1s ease;
 }
 
 @keyframes shine1 {
@@ -247,6 +286,12 @@ body {
     50% { 
         text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0;
     }
+}
+
+@keyframes keyPress {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); background: rgba(0, 255, 0, 0.2); }
+    100% { transform: scale(1); }
 }
 
 @media screen and (max-width: 1524px) {
