@@ -93,8 +93,8 @@ window.onload = function () {
     ];
     var firstpilar = _1start + pillars[0].width;
 
-    _1tank.src = "img/tank.png";
-    _2tank.src = "img/tank.png";
+    _1tank.src = "assets/img/tank.png";
+    _2tank.src = "assets/img/tank.png";
 
 
     function make_ground() {
