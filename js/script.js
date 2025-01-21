@@ -102,7 +102,11 @@ window.onload = function () {
 
         // Generate hitboxes array
         var hitboxes = [
-            {x: _1start, y: ground_level - pillars[0].height, width: pillars[0].width, height: pillars[0].height},
+            {
+                x: _1start,
+                y: ground_level - pillars[0].height,
+                width: pillars[0].width,
+                height: pillars[0].height}
         ];
 
         hitboxes.push({
@@ -365,7 +369,6 @@ window.onload = function () {
                     _1velocityY = -_1speed * Math.sin(_1angle); // Lodret hastighed
                     _1skud = true;
 
-
                     if (_1charge_power <= 35) {
                         _1damageHeight = 50;
                     }
@@ -377,8 +380,8 @@ window.onload = function () {
                     }
 
                     // Opdater position til midten af tanken
-                    _1tankXmiddle = _1tankX + 50;
-                    _1tankYmiddle = _1tankY + 35;
+                    _1tankXmiddle = _1tankX + 17;
+                    _1tankYmiddle = _1tankY + 27 ;
                     _1skudX = _1tankXmiddle;
                     _1skudY = _1tankYmiddle;
                     _1charge_cooldown = 0;
@@ -390,7 +393,6 @@ window.onload = function () {
                 }
             }
         }
-
 
         function _1charge() {
             if (!_1skud) {
@@ -451,7 +453,6 @@ window.onload = function () {
         // Funktion til at tegne banen for skuddet
         function _1drawTrajectory() {
 
-            context_arc1.clearRect(0, 0, canvas_arc1.width, canvas_arc1.height); // Ensure arc canvas is cleared first
             context_player.clearRect(0, 0, canvas_player.width, canvas_player.height); // Ensure player canvas is cleared
 
             context_player.drawImage(_1tank, _1tankX, _1tankY);
@@ -492,8 +493,9 @@ window.onload = function () {
 
                     if (_1trajectoryX > canvas_arc1.width || _1trajectoryY > canvas_arc1.height || _1trajectoryY > ground_level) break;
                 }
-
+                context_arc1.clearRect(0, 0, canvas_arc1.width, canvas_arc1.height); // Ensure arc canvas is cleared first
                 context_arc1.stroke(); // Draw the path
+
             }
 
             make_ground(); // Redraw the ground
@@ -600,8 +602,8 @@ window.onload = function () {
                     }
 
                     // Update bullet's starting position (center of player 2's tank)
-                    _2tankXmiddle = _2tankX + 50;
-                    _2tankYmiddle = _2tankY + 35;
+                    _2tankXmiddle = _2tankX + 17;
+                    _2tankYmiddle = _2tankY + 27;
                     _2skudX = _2tankXmiddle;
                     _2skudY = _2tankYmiddle;
 
@@ -737,8 +739,8 @@ window.onload = function () {
 
                 // Check if bullet is out of bounds
                 if (_2skudX > canvas_player.width || _2skudY > canvas_player.height) {
-                    _2skudX = _2tankX + 25;
-                    _2skudY = _2tankY;
+                    _2skudX = _2tankXmiddle;
+                    _2skudY = _2tankYmiddle;
                     _2velocityX = 0;
                     _2velocityY = 0;
                     _2skud = false;
