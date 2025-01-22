@@ -47,6 +47,7 @@ window.onload = function () {
     let _1leftPressed = false;
     let _1shootPressed = false;
     let _1chargePressed = false;
+    let _1player_win = false;
 
 
     // player 2 variables
@@ -75,6 +76,7 @@ window.onload = function () {
     let _2leftPressed = false;
     let _2shootPressed = false;
     let _2chargePressed = false;
+    let _2player_win = false;
 
 
 
