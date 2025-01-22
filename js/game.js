@@ -781,22 +781,8 @@ window.onload = function () {
 
     function gameLoop() {
         // Opdater positioner for spillere
-        if (_1player_win === false) {
-            player1();
-        }
-        if (_2player_win === false) {
-            player2();
-        }
-
-
-
-        if (_1player_alive === false) {
-            _2player_win = true;
-        }
-        if (_2player_alive === false) {
-            _1player_win = true;
-        }
-
+        player1();
+        player2();
 
         context_player.drawImage(_1tank, _1tankX, _1tankY);
         context_player.drawImage(_2tank, _2tankX, _2tankY);
