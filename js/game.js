@@ -47,7 +47,7 @@ window.onload = function () {
     let _1leftPressed = false;
     let _1shootPressed = false;
     let _1chargePressed = false;
-    let _1player_win = false;
+
 
     // player 2 variables
     var _2tank = new Image();
@@ -75,7 +75,7 @@ window.onload = function () {
     let _2leftPressed = false;
     let _2shootPressed = false;
     let _2chargePressed = false;
-    let _2player_win = false;
+
 
 
     var ground_level = 680;
@@ -277,11 +277,11 @@ window.onload = function () {
         } else if (event.key === 'k' || event.key === 'K') {
             _2downPressed = true;
         } else if (event.key === 'u' || event.key === 'U') {
-            _2chargePressed = true;
+            _2shootPressed = true;
         } else if (event.key === 'i' || event.key === 'I') {
             _2upPressed = true;
         } else if (event.key === 'o' || event.key === 'O') {
-            _2shootPressed = true;
+            _2chargePressed = true;
         } else if (event.key === 'l' || event.key === 'L') {
             _2rightPressed = true;
         }
@@ -305,11 +305,11 @@ window.onload = function () {
         } else if (event.key === 'k' || event.key === 'K') {
             _2downPressed = false;
         } else if (event.key === 'u' || event.key === 'U') {
-            _2chargePressed = false;
+            _2shootPressed = false;
         } else if (event.key === 'i' || event.key === 'I') {
             _2upPressed = false;
         } else if (event.key === 'o' || event.key === 'O') {
-            _2shootPressed = false;
+             _2chargePressed = false;
         } else if (event.key === 'l' || event.key === 'L') {
             _2rightPressed = false;
         }
