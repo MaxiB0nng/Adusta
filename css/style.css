@@ -1,8 +1,60 @@
 @charset "UTF-8";
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
+:root {
+    /* Colors */
+    --color-black: #000;
+    --color-neon-green: #0f0;
+    --color-neon-red: #f00;
+    --color-border-dark: #111;
+    --color-border-medium: #222;
+    --color-border-light: #333;
+    --color-transparent-black: rgba(0, 0, 0, 0.9);
+    --color-transparent-green: rgba(0, 255, 0, 0.15);
+    --color-scanline: rgba(0, 0, 0, 0.1);
+    --color-vignette: rgba(0, 0, 0, 0.3);
+    
+    /* Sizes */
+    --canvas-width: 1524px;
+    --canvas-height: 700px;
+    --border-radius: 20px;
+    --led-size: 12px;
+    --key-min-width: 30px;
+    --control-min-width: 250px;
+    
+    /* Effects */
+    --glow-green: 
+        0 0 5px var(--color-neon-green),
+        0 0 10px var(--color-neon-green);
+    --glow-red:
+        0 0 5px var(--color-neon-red),
+        0 0 10px var(--color-neon-red);
+    --box-shadow-tv: 
+        0 0 0 15px var(--color-border-light),
+        0 0 0 16px var(--color-border-medium),
+        0 0 0 48px var(--color-border-dark),
+        0 0 32px rgba(0,0,0,0.8) inset,
+        0 0 80px rgba(0,0,0,0.5);
+    --box-shadow-player:
+        0 0 2px var(--color-neon-green),
+        0 0 4px var(--color-neon-green),
+        0 0 8px var(--color-neon-green),
+        inset 0 0 8px rgba(0, 255, 0, 0.3);
+    
+    /* Animation Timings */
+    --animation-pulse: 4s;
+    --animation-shine1: 4.5s;
+    --animation-shine2: 3.7s;
+    --animation-text-pulse: 2s;
+    --animation-power: 4s;
+
+    /* Health Bar */
+    --health-height: 20px;
+    --health-border: 2px;
+}
+
 body {
-    background-color: black;
+    background-color: var(--color-black);
     margin: 0;
     overflow: hidden;
     height: 100vh;
@@ -31,16 +83,11 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: transparent;
-    width: 1524px;
-    height: 700px;
-    border: 4px solid #111;
-    border-radius: 20px;
-    box-shadow: 
-        0 0 0 15px #333,
-        0 0 0 16px #222,
-        0 0 0 48px #111,
-        0 0 32px rgba(0,0,0,0.8) inset,
-        0 0 80px rgba(0,0,0,0.5);
+    width: var(--canvas-width);
+    height: var(--canvas-height);
+    border: 4px solid var(--color-border-dark);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow-tv);
     clip-path: inset(0% 0% 0% 0% round 20px);
     filter: brightness(1.1) contrast(1.2);
 }
@@ -66,7 +113,7 @@ body {
     height: 100%;
     background: linear-gradient(
         transparent 50%,
-        rgba(0, 0, 0, 0.1) 50%
+        var(--color-scanline) 50%
     );
     background-size: 100% 4px;
     z-index: 5;
@@ -80,20 +127,13 @@ body {
     position: fixed;  /* Changed from absolute to fixed */
     bottom: 305px;
     right: 15px;
-    width: 12px;
-    height: 12px;
-    background: #f00;
+    width: var(--led-size);
+    height: var(--led-size);
+    background: var(--color-neon-red);
     border-radius: 50%;
-    box-shadow: 0 0 10px #f00;
+    box-shadow: var(--glow-red);
+    animation: powerBlink var(--animation-power) infinite;
     z-index: 9999;
-    animation: powerBlink 4s infinite;
-}
-
-@keyframes powerBlink {
-    0%, 100% { opacity: 1; box-shadow: 0 0 10px #f00; }
-    50% { opacity: 0.7; box-shadow: 0 0 5px #f00; }
-    51% { opacity: 0.3; box-shadow: 0 0 15px #f00; }
-    52% { opacity: 0.7; box-shadow: 0 0 5px #f00; }
 }
 
 /* Vignette effect */
@@ -107,7 +147,7 @@ body {
     background: radial-gradient(
         circle at center,
         transparent 60%,
-        rgba(0,0,0,0.3) 100%
+        var(--color-vignette) 100%
     );
     pointer-events: none;
     z-index: 98;
@@ -140,19 +180,15 @@ body {
 .player1, .player2 {
     text-align: center;
     padding: 15px;
-    background: rgba(0, 0, 0, 0.9);
-    border: 2px solid #0f0;
-    border-radius: 10px;
-    min-width: 250px;
+    background: var(--color-transparent-black);
+    border: 2px solid var(--color-neon-green);
+    border-radius: var(--border-radius);
+    min-width: var(--control-min-width);
+    animation: pulse var(--animation-pulse) ease-in-out infinite;
+    box-shadow: var(--box-shadow-player);
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
-    animation: pulse 4s ease-in-out infinite;
-    box-shadow: 
-        0 0 2px var(--color-neon-green),
-        0 0 4px var(--color-neon-green),
-        0 0 8px var(--color-neon-green),
-        inset 0 0 8px rgba(0, 255, 0, 0.3);
 }
 
 .player1::after {
@@ -165,7 +201,7 @@ body {
     background: linear-gradient(
         to right,
         transparent,
-        rgba(0, 255, 0, 0.15),
+        var(--color-transparent-green),
         transparent
     );
     transform: rotate(45deg);
@@ -209,11 +245,11 @@ body {
 }
 
 .key {
-    background: rgba(0, 255, 0, 0.1);
-    border: 1px solid #0f0;
+    background: var(--color-transparent-green);
+    border: 1px solid var(--color-neon-green);
     padding: 10px;
     border-radius: 5px;
-    min-width: 30px;
+    min-width: var(--key-min-width);
     margin: 2px;
 }
 
@@ -221,6 +257,75 @@ body {
     background: rgba(0, 255, 0, 0.3);
     transform: scale(0.95);
     transition: all 0.1s ease;
+}
+
+.player1:hover, .player2:hover {
+    border-color: #0f0;
+    box-shadow: 
+        0 0 10px #0f0,
+        0 0 20px #0f0,
+        inset 0 0 5px #0f0;
+    transform: translateY(-2px);
+}
+
+.controls h2 {
+    color: var(--color-neon-green);
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-shadow: var(--glow-green);
+    animation: textPulse var(--animation-text-pulse) infinite;
+}
+
+.controls p {
+    color: var(--color-neon-green);
+    text-shadow: var(--glow-green);
+    font-size: 14px;
+    margin: 8px 0;
+    letter-spacing: 1px;
+}
+
+.health-container {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.health-bar {
+    width: 100%;
+    height: var(--health-height);
+    background: var(--color-transparent-black);
+    border: var(--health-border) solid var(--color-neon-green);
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: var(--glow-green);
+}
+
+.health-fill {
+    height: 100%;
+    background: var(--color-neon-green);
+    transition: width 0.3s ease-in-out;
+    box-shadow: 0 0 10px var(--color-neon-green);
+}
+
+.health-text {
+    color: var(--color-neon-green);
+    text-shadow: var(--glow-green);
+    font-size: 14px;
+    min-width: 50px;
+}
+
+@keyframes powerBlink {
+    0%, 100% { 
+        opacity: 1; 
+        box-shadow: var(--glow-red);
+        transform: scale(1);
+    }
+    50% { 
+        opacity: 0.7; 
+        box-shadow: 0 0 3px var(--color-neon-red);
+        transform: scale(0.95);
+    }
 }
 
 @keyframes shine1 {
@@ -243,35 +348,6 @@ body {
         left: 100%;
         opacity: 0.8;
     }
-}
-
-.player1:hover, .player2:hover {
-    border-color: #0f0;
-    box-shadow: 
-        0 0 10px #0f0,
-        0 0 20px #0f0,
-        inset 0 0 5px #0f0;
-    transform: translateY(-2px);
-}
-
-.controls h2 {
-    color: #0f0;
-    font-size: 18px;
-    margin-bottom: 10px;
-    animation: textPulse 2s infinite;
-    text-shadow: 
-        0 0 5px #0f0,
-        0 0 10px #0f0;
-}
-
-.controls p {
-    color: #0f0;
-    font-size: 14px;
-    margin: 8px 0;
-    text-shadow: 
-        0 0 3px #0f0,
-        0 0 6px #0f0;
-    letter-spacing: 1px;
 }
 
 @keyframes pulse {
