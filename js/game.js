@@ -14,7 +14,6 @@ window.onload = function () {
     var canvas_bullet2 = document.getElementById('bullet2');
     var context_bullet2 = canvas_bullet2.getContext('2d');
 
-
     // Initialiser forskellige variabler
 
     var gravity = 20; // Gravitationsstyrke
@@ -451,6 +450,7 @@ window.onload = function () {
                 context_bullet1.clearRect(0, 0, canvas_bullet1.width, canvas_bullet1.height);
                 context_player.drawImage(_1tank, _1tankX, _1tankY);
                 context_player.drawImage(_2tank, _2tankX, _2tankY);
+                checkWinCondition(); // Call the function to check win condition
             }
         }
 
@@ -679,6 +679,7 @@ window.onload = function () {
                 context_bullet2.clearRect(0, 0, canvas_bullet2.width, canvas_bullet2.height);
                 context_player.drawImage(_1tank, _1tankX, _1tankY);
                 context_player.drawImage(_2tank, _2tankX, _2tankY);
+                checkWinCondition(); // Call the function to check win condition
             }
         }
 
@@ -778,17 +779,28 @@ window.onload = function () {
         }
     }
 
+    // Add this function to check the players' HP and display the winner
+    function checkWinCondition() {
+        if (_1playerhp <= 0) {
+            _1player_alive = false;
+            _2player_win = true;
+            displayWinner("Player 2 Wins!");
+        } else if (_2playerhp <= 0) {
+            _2player_alive = false;
+            _1player_win = true;
+            displayWinner("Player 1 Wins!");
+        }
+    }
+
+    
 
     function gameLoop() {
         // Opdater positioner for spillere
-        if (_1player_win === false) {
+        if (_1player_win === false && _2player_win === false) {
             player1();
-        }
-        if (_2player_win === false) {
             player2();
+            checkWinCondition(); // Call the function to check win condition
         }
-
-
 
         if (_1player_alive === false) {
             _2player_win = true;
