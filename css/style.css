@@ -51,6 +51,12 @@
     /* Health Bar */
     --health-height: 20px;
     --health-border: 2px;
+
+    /* Player Positions */
+    --player1-left: -20%;
+    --player1-top: 40%;
+    --player2-right: -20%;
+    --player2-top: 40%;
 }
 
 body {
@@ -189,6 +195,20 @@ body {
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
+}
+
+.player1 {
+    position: fixed;
+    left: var(--player1-left);
+    top: var(--player1-top);
+    transform: translateY(-50%);
+}
+
+.player2 {
+    position: fixed;
+    right: var(--player2-right);
+    top: var(--player2-top);
+    transform: translateY(-50%);
 }
 
 .player1::after {
