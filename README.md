@@ -32,7 +32,7 @@ Adusta is a local 2-player physics-based game where tanks battle to survive! its
 - A modern browser that supports HTML5 Canvas.  
 
 ## How to Play  
-1. either downlod the repositorie or go to adusta.dk to play
+1. Either downlod the repository or go to https://adusta.dk to play
 2. Use the controls to move, aim, and fire at your opponent.
 3. Destroy the opposing tank before your health runs out!  
 
