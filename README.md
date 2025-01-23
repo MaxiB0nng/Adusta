@@ -1,6 +1,6 @@
 # Adusta
 
-Adusta is a local 2-player physics-based game where tanks battle to survive! Built on HTML5 Canvas, the game focuses on strategy, precision, and math, incorporating concepts like parabolic motion and angles.
+Adusta is a local 2-player physics-based game where tanks battle to survive! its based on that game scorched earth. Built on HTML5 Canvas, the game focuses on strategy, precision, and math, incorporating concepts like parabolic motion and angles.
 
 ## Gameplay  
 - **Objective**: Destroy your opponent's tank while protecting your own.  
