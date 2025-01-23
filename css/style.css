@@ -47,6 +47,50 @@
     --animation-shine2: 3.7s;
     --animation-text-pulse: 2s;
     --animation-power: 4s;
+    --cloud-speed-1: 120s;
+    --cloud-speed-2: 90s;
+
+    /* Cloud Settings */
+    /* Sizes */
+    --cloud1-size: 42% auto;
+    --cloud2-size: 28% auto;
+    --cloud3-size: 35% auto;
+    --cloud4-size: 31% auto;
+    
+    /* Vertical Positions */
+    --cloud1-position-y: 17%;
+    --cloud2-position-y: 42%;
+    --cloud3-position-y: 28%;
+    --cloud4-position-y: 63%;
+    
+    /* Opacity Levels */
+    --cloud1-opacity: 0.45;
+    --cloud2-opacity: 0.35;
+    --cloud3-opacity: 0.4;
+    --cloud4-opacity: 0.3;
+    
+    /* Starting Positions */
+    --cloud-offset-1: 23%;
+    --cloud-offset-2: -37%;
+    --cloud-offset-3: 41%;
+    --cloud-offset-4: -19%;
+    
+    /* Animation Speeds (using prime numbers) */
+    --cloud-speed-1: 173s;
+    --cloud-speed-2: 139s;
+    --cloud-speed-3: 157s;
+    --cloud-speed-4: 191s;
+    
+    /* Z-Index Layers */
+    --cloud-z-1: 2;
+    --cloud-z-2: 3;
+    --cloud-z-3: 4;
+    --cloud-z-4: 5;
+
+    --cloud-start-1: -20%;
+    --cloud-start-2: 30%;
+    --cloud-start-3: -40%;
+    --cloud-start-4: 10%;
 
     /* Health Bar */
     --health-height: 20px;
@@ -57,6 +101,13 @@
     --player1-top: 40%;
     --player2-right: -20%;
     --player2-top: 40%;
+
+    /* images*/
+    --background-image: url('../assets/img/sky.png');
+    --cloud-image-1: url('../assets/img/cloud1.png');
+    --cloud-image-2: url('../assets/img/cloud2.png');
+    --cloud-image-3: url('../assets/img/cloud3.png');
+    --cloud-image-4: url('../assets/img/cloud4.png');
 }
 
 body {
@@ -98,12 +149,15 @@ body {
     filter: brightness(1.1) contrast(1.2);
 }
 
-#ground { z-index: 4; }
+#ground { z-index: 1;
+    background-image: var(--background-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; }
 #player { z-index: 5; }
 #bullet1 { z-index: 6; }
 #bullet2 { z-index: 7; }
 #arc1 {
-    background-color: grey;
     z-index: 2;
 }
 #arc2 {
@@ -333,6 +387,75 @@ body {
     text-shadow: var(--glow-green);
     font-size: 14px;
     min-width: 50px;
+}
+
+.cloud-layer1, .cloud-layer2, .cloud-layer3, .cloud-layer4 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--canvas-width);
+    height: var(--canvas-height);
+    background-repeat: repeat-x;
+    pointer-events: none;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.cloud-layer1 {
+    z-index: var(--cloud-z-1);
+    background-image: var(--cloud-image-1);
+    background-size: var(--cloud1-size);
+    opacity: var(--cloud1-opacity);
+    background-position-y: var(--cloud1-position-y);
+    animation: moveCloud1 var(--cloud-speed-1) linear infinite;
+}
+
+.cloud-layer2 {
+    z-index: var(--cloud-z-2);
+    background-image: var(--cloud-image-2);
+    background-size: var(--cloud2-size);
+    opacity: var(--cloud2-opacity);
+    background-position-y: var(--cloud2-position-y);
+    animation: moveCloud2 var(--cloud-speed-2) linear infinite;
+}
+
+.cloud-layer3 {
+    z-index: var(--cloud-z-3);
+    background-image: var(--cloud-image-3);
+    background-size: var(--cloud3-size);
+    opacity: var(--cloud3-opacity);
+    background-position-y: var(--cloud3-position-y);
+    animation: moveCloud3 var(--cloud-speed-3) linear infinite;
+}
+
+.cloud-layer4 {
+    z-index: var(--cloud-z-4);
+    background-image: var(--cloud-image-4);
+    background-size: var(--cloud4-size);
+    opacity: var(--cloud4-opacity);
+    background-position-y: var(--cloud4-position-y);
+    animation: moveCloud4 var(--cloud-speed-4) linear infinite;
+}
+
+@keyframes moveCloud1 {
+    0% { background-position-x: 0; }
+    100% { background-position-x: var(--canvas-width); }
+}
+
+@keyframes moveCloud2 {
+    0% { background-position-x: var(--canvas-width); }
+    100% { background-position-x: calc(-1 * var(--canvas-width)); }
+}
+
+@keyframes moveCloud3 {
+    0% { background-position-x: 0; }
+    100% { background-position-x: var(--canvas-width); }
+}
+
+@keyframes moveCloud4 {
+    0% { background-position-x: var(--canvas-width); }
+    100% { background-position-x: calc(-1 * var(--canvas-width)); }
 }
 
 @keyframes powerBlink {
