@@ -494,7 +494,7 @@ window.onload = function () {
                 context_arc1.beginPath();
                 context_arc1.moveTo(_1trajectoryX, _1trajectoryY);
 
-                for (let t = 0; t < 200; t += 1) {
+                for (let t = 0; t < 30; t += 1) {
                     _1trajectoryX = _1skudX + _1initialVelocityX * t;
                     _1trajectoryY = _1skudY + _1initialVelocityY * t + 0.5 * gravity * Math.pow(t / 10, 2);
 
@@ -720,7 +720,7 @@ window.onload = function () {
                 context_arc2.moveTo(_2trajectoryX, _2trajectoryY);
 
                 // Simulate trajectory points
-                for (let t = 0; t < 200; t += 1) {
+                for (let t = 0; t < 30; t += 1) {
                     _2trajectoryX = _2skudX + _2initialVelocityX * t;
                     _2trajectoryY = _2skudY + _2initialVelocityY * t + 0.5 * gravity * Math.pow(t / 10, 2);
 
