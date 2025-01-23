@@ -40,14 +40,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Initial fade out
         for (let i = 1; i <= cloudCount; i++) {
             const cloudLayer = document.querySelector(`.cloud-layer${i}`);
-            cloudLayer.style.transition = 'all 1s ease-in-out';
+            cloudLayer.style.transition = 'opacity 0.5s steps(5)';
             cloudLayer.style.opacity = '0';
         }
     
         setTimeout(() => {
             for (let i = 1; i <= cloudCount; i++) {
                 const size = Math.floor(Math.random() * 20 + 25);
-                // Divide sky into 4 zones (0-8%, 8-16%, 16-24%, 24-32%)
                 const baseHeight = (i - 1) * 8;
                 const posY = Math.floor(Math.random() * 8 + baseHeight);
                 const speed = Math.floor(Math.random() * 50 + 150);
@@ -57,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const cloudLayer = document.querySelector(`.cloud-layer${i}`);
                 const randomCloudIndex = Math.floor(Math.random() * cloudPaths.length);
                 
-                cloudLayer.style.transition = 'all 1s ease-in-out';
+                cloudLayer.style.transition = 'all 0.5s steps(5)';
                 
                 setTimeout(() => {
                     root.style.setProperty(`--cloud${i}-size`, `${size}% auto`);
@@ -67,9 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     root.style.setProperty(`--cloud${i}-opacity`, opacity);
                     cloudLayer.style.backgroundImage = `url('${cloudPaths[randomCloudIndex]}')`;
                     cloudLayer.style.opacity = opacity;
-                }, i * 150);
+                }, i * 100);
             }
-        }, 800);
+        }, 500);
     }
 
     function fadeVolume(targetVolume, duration, onComplete) {

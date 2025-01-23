@@ -400,6 +400,7 @@ body {
     pointer-events: none;
     border-radius: var(--border-radius);
     overflow: hidden;
+    animation-timing-function: steps(60) !important;
 }
 
 .cloud-layer1 {
@@ -454,8 +455,8 @@ body {
 }
 
 @keyframes moveCloud4 {
-    0% { background-position-x: var(--canvas-width); }
-    100% { background-position-x: calc(-1 * var(--canvas-width)); }
+    0% { background-position-x: 0; }
+    100% { background-position-x: var(--canvas-width); }
 }
 
 @keyframes powerBlink {
