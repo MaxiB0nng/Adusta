@@ -436,6 +436,20 @@ window.onload = function () {
                 // Collision detected
                 _2playerhp -= 25; // Reduce Player 2's HP by 25
                 console.log("Player 2 HP:", _2playerhp);
+        
+                // Update health bar and text
+                const healthBar = document.querySelector('.p2-health');
+                const healthText = document.querySelector('.player2 .health-text');
+                
+                healthBar.style.width = `${Math.max(0, _2playerhp)}%`;
+                healthText.textContent = `${Math.max(0, Math.round(_2playerhp))}%`;
+                
+                // Add hit flash effect
+                healthBar.classList.add('hit-flash');
+                setTimeout(() => {
+                    healthBar.classList.remove('hit-flash');
+                }, 500);
+
                 if (_1playerhp <= 0) {
                     _1player_alive = false;
                 }
@@ -664,6 +678,20 @@ window.onload = function () {
                 // Collision detected
                 _1playerhp -= 25; // Reduce Player 1's HP by 25
                 console.log("Player 1 HP:", _1playerhp);
+        
+                // Update health bar and text
+                const healthBar = document.querySelector('.p1-health');
+                const healthText = document.querySelector('.player1 .health-text');
+                
+                healthBar.style.width = `${Math.max(0, _1playerhp)}%`;
+                healthText.textContent = `${Math.max(0, Math.round(_1playerhp))}%`;
+                
+                // Add hit flash effect
+                healthBar.classList.add('hit-flash');
+                setTimeout(() => {
+                    healthBar.classList.remove('hit-flash');
+                }, 500);
+
                 if (_2playerhp <= 0) {
                     _2player_alive = false;
                 }

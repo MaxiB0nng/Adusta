@@ -367,10 +367,15 @@ body {
     box-shadow: var(--glow-green);
 }
 
+.health-fill.hit-flash {
+    background-color: var(--color-neon-red) !important;
+    transition: background-color 0.5s;
+}
+
 .health-fill {
     height: 100%;
     background: var(--color-neon-green);
-    transition: width 0.3s ease-in-out;
+    transition: width 0.3s ease-in-out, background-color 0.5s;
     box-shadow: 0 0 10px var(--color-neon-green);
 }
 
