@@ -80,7 +80,7 @@ window.onload = function () {
 
 
 
-    var ground_level = 680;
+    var ground_level = 700;
     var _1start_spot = 300;
     var _2start_spot = 1200;
     var start_spot_random = Math.random() * (100 - 20) + 60;
@@ -103,8 +103,6 @@ window.onload = function () {
         //start 1
         context_ground.clearRect(0, 0, canvas_ground.width, canvas_ground.height);
         context_ground.beginPath();
-        context_ground.moveTo(0, ground_level);
-        context_ground.lineTo(1524, ground_level);
 
         // Generate hitboxes array
         var hitboxes = [
@@ -540,7 +538,7 @@ window.onload = function () {
                 // Tegn skuddet
                 context_bullet1.beginPath();
                 context_bullet1.arc(_1skudX, _1skudY, radius, 0, 2 * Math.PI, false);
-                context_bullet1.fillStyle = 'blue';
+                    context_bullet1.fillStyle = 'blue';
                 context_bullet1.fill();
 
                 _1collisionDetection();
