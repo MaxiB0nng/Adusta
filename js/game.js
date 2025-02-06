@@ -47,7 +47,7 @@ window.onload = function () {
     let _1leftPressed = false;
     let _1shootPressed = false;
     let _1chargePressed = false;
-    let _1player_win = false;
+
 
 
     // player 2 variables
@@ -76,7 +76,7 @@ window.onload = function () {
     let _2leftPressed = false;
     let _2shootPressed = false;
     let _2chargePressed = false;
-    let _2player_win = false;
+
 
 
 
@@ -97,6 +97,10 @@ window.onload = function () {
 
     _1tank.src = "assets/img/tank.png";
     _2tank.src = "assets/img/tank.png";
+
+    let lastTime = 0;
+    const fps = 60; // Desired frames per second
+    const frameDuration = 1000 / fps;
 
 
     function make_ground() {
@@ -339,8 +343,7 @@ window.onload = function () {
     }, 10);
 
     //player 1
-    function player1() {
-        _1update();
+    function _1update(deltaTime) {
 
 
         // Opdater vinkel, når "W" eller "S" tasten holdes nede
@@ -560,7 +563,7 @@ window.onload = function () {
             }
         }
 
-        function _1update() {
+
             _1updateVinkel()
             _1updateTankPosition();
             _1drawTrajectory();
@@ -572,14 +575,11 @@ window.onload = function () {
                 _1charge()
             }
 
-
-            requestAnimationFrame(_1update);
-        }
     }
 
     //player 2
-    function player2() {
-        _2update();
+    function _2update(deltaTime) {
+
 
         // Update angle when up or down keys are pressed
         function _2updateVinkel() {
@@ -790,7 +790,6 @@ window.onload = function () {
             }
         }
 
-        function _2update() {
             _2updateVinkel();
             _2updateTankPosition();
             _2drawTrajectory();
@@ -802,31 +801,25 @@ window.onload = function () {
                 _2charge();
             }
 
-            requestAnimationFrame(_2update);
-        }
     }
 
+    function gameLoop(timestamp) {
+        const deltaTime = timestamp - lastTime; // Time since the last frame
+        if (deltaTime >= frameDuration) {
+            lastTime = timestamp;
 
-    function gameLoop() {
-        // Opdater positioner for spillere
-        if (_1player_win === false) {
-            player1();
-        }
-        if (_2player_win === false) {
-            player2();
-        }
+            // Update game state and render it
+            _1update(deltaTime / 1000); // Pass `dt` in seconds for logic
+            // Update game state and render it
+            _2update(deltaTime / 1000); // Pass `dt` in seconds for logic
 
-
-
-        if (_1player_alive === false) {
-            _2player_win = true;
-        }
-        if (_2player_alive === false) {
-            _1player_win = true;
         }
 
-        context_player.drawImage(_1tank, _1tankX, _1tankY);
-        context_player.drawImage(_2tank, _2tankX, _2tankY);
+        // Schedule the next frame
+        requestAnimationFrame(gameLoop);
     }
+
+    gameLoop();
+
 
 }
