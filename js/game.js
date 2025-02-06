@@ -343,7 +343,7 @@ window.onload = function () {
     }, 10);
 
     //player 1
-    function _1update(deltaTime) {
+    function _1update() {
 
 
         // Opdater vinkel, når "W" eller "S" tasten holdes nede
@@ -578,7 +578,7 @@ window.onload = function () {
     }
 
     //player 2
-    function _2update(deltaTime) {
+    function _2update() {
 
 
         // Update angle when up or down keys are pressed
