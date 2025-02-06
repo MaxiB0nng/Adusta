@@ -28,7 +28,7 @@ window.onload = function () {
     var _1tankX = 50; // Tankens start-position (X)
     var _1tankY = 645; // Tankens faste start-position (Y)
     var _1tankXmiddle = _1tankX + 17;
-    var _1tankYmiddle = _1tankY + 27 ;
+    var _1tankYmiddle = _1tankY + 27;
     var _1movementSpeed = 5; // Hvor hurtigt tanken kan flytte sig
     var _1skud = false; // Holder styr på om et skud er aktivt
     var _1charge_cooldown = 10; //såre for at der en buffer mellem at charge og at skyde
@@ -47,7 +47,8 @@ window.onload = function () {
     let _1leftPressed = false;
     let _1shootPressed = false;
     let _1chargePressed = false;
-
+    let _1lastAnimateTime = 0; // Stores the last timestamp when _1animate was executed
+    const _1animateFrameDuration = 1000 / 60; // Target frame duration in milliseconds (60 FPS)
 
 
     // player 2 variables
@@ -76,8 +77,8 @@ window.onload = function () {
     let _2leftPressed = false;
     let _2shootPressed = false;
     let _2chargePressed = false;
-
-
+    let _2lastAnimateTime = 0; // Stores the last timestamp when _1animate was executed
+    const _2animateFrameDuration = 1000 / 60; // Target frame duration in milliseconds (60 FPS)
 
 
     var ground_level = 700;
@@ -114,7 +115,8 @@ window.onload = function () {
                 x: _1start,
                 y: ground_level - pillars[0].height,
                 width: pillars[0].width,
-                height: pillars[0].height}
+                height: pillars[0].height
+            }
         ];
 
         hitboxes.push({
@@ -313,7 +315,7 @@ window.onload = function () {
         } else if (event.key === 'i' || event.key === 'I') {
             _2upPressed = false;
         } else if (event.key === 'o' || event.key === 'O') {
-             _2chargePressed = false;
+            _2chargePressed = false;
         } else if (event.key === 'l' || event.key === 'L') {
             _2rightPressed = false;
         }
@@ -385,7 +387,7 @@ window.onload = function () {
 
                     // Opdater position til midten af tanken
                     _1tankXmiddle = _1tankX + 17;
-                    _1tankYmiddle = _1tankY + 27 ;
+                    _1tankYmiddle = _1tankY + 27;
                     _1skudX = _1tankXmiddle;
                     _1skudY = _1tankYmiddle;
                     _1charge_cooldown = 0;
@@ -437,14 +439,14 @@ window.onload = function () {
                 // Collision detected
                 _2playerhp -= 25; // Reduce Player 2's HP by 25
                 console.log("Player 2 HP:", _2playerhp);
-        
+
                 // Update health bar and text
                 const healthBar = document.querySelector('.p2-health');
                 const healthText = document.querySelector('.player2 .health-text');
-                
+
                 healthBar.style.width = `${Math.max(0, _2playerhp)}%`;
                 healthText.textContent = `${Math.max(0, Math.round(_2playerhp))}%`;
-                
+
                 // Add hit flash effect
                 healthBar.classList.add('hit-flash');
                 setTimeout(() => {
@@ -525,43 +527,52 @@ window.onload = function () {
             make_ground(); // Redraw the ground
         }
 
-        // Funktion til at animere skuddet
-        function _1animate() {
+
+        function _1animate(timestamp) {
             if (_1skud) {
+                // Throttle animation to 60 FPS
+                if (timestamp - _1lastAnimateTime >= _1animateFrameDuration) {
+                    _1lastAnimateTime = timestamp; // Update last execution time
 
-                _1skudX += _1velocityX; // Opdater vandret position
-                _1velocityY += gravity / 100; // Opdater lodret hastighed grundet tyngdekraft
-                _1skudY += _1velocityY; // Opdater lodret position
+                    // Update bullet's position
+                    _1skudX += _1velocityX; // Update horizontal position
+                    _1velocityY += gravity / 100; // Update vertical velocity due to gravity
+                    _1skudY += _1velocityY; // Update vertical position
 
-                context_bullet1.clearRect(0, 0, canvas_bullet1.width, canvas_bullet1.height);
-                // Fjern rød bane, hvor skuddet er
-                context_arc1.clearRect(_1skudX - radius, _1skudY - radius, radius * 2, radius * 2);
+                    // Clear bullet's canvas and trajectory arc where the bullet has moved
+                    context_bullet1.clearRect(0, 0, canvas_bullet1.width, canvas_bullet1.height);
+                    context_arc1.clearRect(_1skudX - radius, _1skudY - radius, radius * 2, radius * 2);
 
-
-                // Tegn skuddet
-                context_bullet1.beginPath();
-                context_bullet1.arc(_1skudX, _1skudY, radius, 0, 2 * Math.PI, false);
+                    // Draw the bullet
+                    context_bullet1.beginPath();
+                    context_bullet1.arc(_1skudX, _1skudY, radius, 0, 2 * Math.PI, false);
                     context_bullet1.fillStyle = 'blue';
-                context_bullet1.fill();
+                    context_bullet1.fill();
 
-                _1collisionDetection();
+                    // Perform collision detection
+                    _1collisionDetection();
 
-                // Tjek, om skuddet er udenfor banen
-                if (_1skudX > canvas_player.width || _1skudY > canvas_player.height) {
-                    _1skudX = _1tankX + 25; // Nulstil skuddet til kanonens position
-                    _1skudY = _1tankY;
-                    _1velocityX = 0;
-                    _1velocityY = 0;
-                    _1shoot_cooldown += 50;
-                    _1skud = false; // Markér skud som reset
-                } else {
-                    requestAnimationFrame(_1animate); // Fortsæt animationen
+                    // Check if the bullet is out of bounds (outside the canvas)
+                    if (_1skudX > canvas_player.width || _1skudY > canvas_player.height) {
+                        _1resetBulletState(); // Reset bullet's position and state
+                    }
                 }
-                // Tegn tanken igen ved dens nuværende position
 
-                _1drawTrajectory();
+                // Request the next animation frame
+                requestAnimationFrame(_1animate);
             }
         }
+
+        // Helper function to reset bullet state when it goes out of bounds
+        function _1resetBulletState() {
+            _1skudX = _1tankX + 25; // Reset bullet's position to the cannon
+            _1skudY = _1tankY;
+            _1velocityX = 0; // Reset velocity
+            _1velocityY = 0;
+            _1shoot_cooldown += 50; // Add cooldown for shooting
+            _1skud = false; // Mark bullet as reset
+        }
+
 
 
             _1updateVinkel()
@@ -574,6 +585,7 @@ window.onload = function () {
             if (_1chargePressed === true) {
                 _1charge()
             }
+
 
     }
 
@@ -759,36 +771,51 @@ window.onload = function () {
             make_ground();
         }
 
-        function _2animate() {
+        function _2animate(timestamp) {
             if (_2skud) {
-                _2skudX += _2velocityX; // Update horizontal position
-                _2velocityY += gravity / 100; // Update vertical velocity due to gravity
-                _2skudY += _2velocityY; // Update vertical position
+                // Throttle animation to 60 FPS
+                if (timestamp - _2lastAnimateTime >= _2animateFrameDuration) {
+                    _2lastAnimateTime = timestamp; // Update last execution time
 
-                context_bullet2.clearRect(0, 0, canvas_bullet2.width, canvas_bullet2.height);
-                context_arc2.clearRect(_2skudX - radius, _2skudY - radius, radius * 2, radius * 2);
+                    // Update bullet's position
+                    _2skudX += _2velocityX; // Update horizontal position
+                    _2velocityY += gravity / 100; // Update vertical velocity due to gravity
+                    _2skudY += _2velocityY; // Update vertical position
 
-                // Draw bullet
-                context_bullet2.beginPath();
-                context_bullet2.arc(_2skudX, _2skudY, radius, 0, 2 * Math.PI, false);
-                context_bullet2.fillStyle = 'red';
-                context_bullet2.fill();
+                    // Clear bullet's canvas and trajectory arc where the bullet has moved
+                    context_bullet2.clearRect(0, 0, canvas_bullet2.width, canvas_bullet2.height);
+                    context_arc2.clearRect(_2skudX - radius, _2skudY - radius, radius * 2, radius * 2);
 
-                _2collisionDetection(); // Check for collision
+                    // Draw the bullet
+                    context_bullet2.beginPath();
+                    context_bullet2.arc(_2skudX, _2skudY, radius, 0, 2 * Math.PI, false);
+                    context_bullet2.fillStyle = 'red';
+                    context_bullet2.fill();
 
-                // Check if bullet is out of bounds
-                if (_2skudX > canvas_player.width || _2skudY > canvas_player.height) {
-                    _2skudX = _2tankXmiddle;
-                    _2skudY = _2tankYmiddle;
-                    _2velocityX = 0;
-                    _2velocityY = 0;
-                    _2skud = false;
-                    _2shoot_cooldown += 50;
-                } else {
-                    requestAnimationFrame(_2animate); // Continue animation
+                    // Perform collision detection
+                    _2collisionDetection();
+
+                    // Check if the bullet is out of bounds (outside the canvas)
+                    if (_2skudX > canvas_player.width || _2skudY > canvas_player.height) {
+                        _2resetBulletState(); // Reset bullet's position and state
+                    }
                 }
+
+                // Request the next animation frame
+                requestAnimationFrame(_2animate);
             }
         }
+
+// Helper function to reset bullet state when it goes out of bounds
+        function _2resetBulletState() {
+            _2skudX = _2tankX + 25; // Reset bullet's position to the cannon
+            _2skudY = _2tankY;
+            _2velocityX = 0; // Reset velocity
+            _2velocityY = 0;
+            _2shoot_cooldown += 50; // Add cooldown for shooting
+            _2skud = false; // Mark bullet as reset
+        }
+
 
             _2updateVinkel();
             _2updateTankPosition();
