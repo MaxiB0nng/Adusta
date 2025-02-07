@@ -21,9 +21,7 @@ window.onload = function () {
     var radius = 10; // Radius for skuddet
 
 
-    //player 1 variables
-    var _1tank = new Image();
-    var _1velocityX = 0; // Vandret hastighed
+    //player 1 variables    var _1velocityX = 0; // Vandret hastighed
     var _1velocityY = 0; // Lodret hastighed
     var _1tankX = 50; // Tankens start-position (X)
     var _1tankY = 645; // Tankens faste start-position (Y)
@@ -52,7 +50,7 @@ window.onload = function () {
 
 
     // player 2 variables
-    var _2tank = new Image();
+
     var _2velocityX = 0; // Vandret hastighed
     var _2velocityY = 0; // Lodret hastighed
     var _2tankX = 1350; // Tankens start-position (X)
@@ -96,16 +94,23 @@ window.onload = function () {
     ];
     var firstpilar = _1start + pillars[0].width;
 
+
+    var _1tank = new Image();
+    var _2tank = new Image();
+    const pillarImage = new Image();
+
     _1tank.src = "assets/img/tank.png";
     _2tank.src = "assets/img/tank.png";
+    pillarImage.src = "assets/img/pillar.png"; //
 
     let lastTime = 0;
     const fps = 60; // Desired frames per second
     const frameDuration = 1000 / fps;
 
-
     function make_ground() {
-        //start 1
+
+
+        // Start ground drawing
         context_ground.clearRect(0, 0, canvas_ground.width, canvas_ground.height);
         context_ground.beginPath();
 
@@ -140,20 +145,19 @@ window.onload = function () {
             height: pillars[3].height,
         });
 
-        // Draw hitboxes for testing
-        context_ground.lineWidth = 5;
-        context_ground.strokeStyle = "black";
-        context_ground.stroke();
-
+        // Draw hitboxes and images
         hitboxes.forEach((box) => {
+            // Draw the pillar image
+            context_ground.drawImage(pillarImage, box.x, box.y, box.width, box.height);
+
+            // Optional: Draw hitbox outlines for debugging
             context_ground.beginPath();
             context_ground.rect(box.x, box.y, box.width, box.height);
-            context_ground.strokeStyle = "blue";
+            context_ground.strokeStyle = "transparent";
             context_ground.stroke();
         });
 
-
-        // Prevent tank and bullet from entering hitboxes
+        // Handle tank and bullet collisions (unchanged)
         hitboxes.forEach((box) => {
             // Handle tank collision
             if (
@@ -188,13 +192,17 @@ window.onload = function () {
                 context_player.drawImage(_1tank, _1tankX, _1tankY);
                 context_player.drawImage(_2tank, _2tankX, _2tankY);
 
-
                 // Find the pillar that was hit, based on the hitbox
                 const pillarIndex = hitboxes.indexOf(box);
+
 
                 if (pillarIndex !== -1 && pillars[pillarIndex]) {
                     // Reduce the height of the impacted pillar
                     pillars[pillarIndex].height -= _1damageHeight;
+                    if (pillars[pillarIndex].height <= 45) {
+                        pillars[pillarIndex].height = 0;
+                    }
+
 
                     // Adjust the bounding box
                     if (box) {
@@ -202,66 +210,68 @@ window.onload = function () {
                         box.y += _1damageHeight;
                     }
 
+
+
                     make_ground();
                 }
             }
-
-            // Handle Player 2 tank collision with hitboxes
-            hitboxes.forEach((box) => {
-                if (
-                    _2tankX + _2tank.width > box.x &&
-                    _2tankX < box.x + box.width &&
-                    _2tankY + _2tank.height > box.y &&
-                    _2tankY < box.y + box.height
-                ) {
-                    if (_2tankX + _2tank.width / 2 < box.x + box.width / 2) {
-                        _2tankX = box.x - _2tank.width; // Skub spiller 2 til venstre for hitbox
-                    } else {
-                        _2tankX = box.x + box.width; // Skub spiller 2 til højre for hitbox
-                    }
-                }
-            });
-            // Handle collision for Player 2's bullet with hitboxes
-            hitboxes.forEach((box) => {
-                if (
-                    _2skud &&
-                    _2skudX + radius > box.x &&
-                    _2skudX - radius < box.x + box.width &&
-                    _2skudY + radius > box.y &&
-                    _2skudY - radius < box.y + box.height
-                ) {
-                    _2skud = false; // Markér spiller 2's skud som inaktivt
-                    _2skudX = _2tankXmiddle; // Reset bullet position
-                    _2skudY = _2tankYmiddle;
-                    _2velocityX = 0;
-                    _2velocityY = 0;
-                    _2shoot_cooldown += 50;
-                    context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                    context_bullet2.clearRect(0, 0, canvas_player.width, canvas_player.height);
-                    context_player.drawImage(_1tank, _1tankX, _1tankY);
-                    context_player.drawImage(_2tank, _2tankX, _2tankY);
-
-
-                    // Find den ramte pillar baseret på hitboxen
-                    const pillarIndex = hitboxes.indexOf(box);
-
-                    if (pillarIndex !== -1 && pillars[pillarIndex]) {
-                        // Reducér højden af den påvirkede pillar
-                        pillars[pillarIndex].height -= _2damageHeight;
-
-                        // Juster hitboxens størrelse og position
-                        if (box) {
-                            box.height -= _2damageHeight;
-                            box.y += _2damageHeight;
-                        }
-
-                        make_ground(); // Opdater hele spillets jordsystem
-                    }
-                }
-            });
         });
 
+        hitboxes.forEach((box) => {
+            // Handle Player 2 tank collision with hitboxes
+            if (
+                _2tankX + _2tank.width > box.x &&
+                _2tankX < box.x + box.width &&
+                _2tankY + _2tank.height > box.y &&
+                _2tankY < box.y + box.height
+            ) {
+                if (_2tankX + _2tank.width / 2 < box.x + box.width / 2) {
+                    _2tankX = box.x - _2tank.width; // Push tank to the left of the hitbox
+                } else {
+                    _2tankX = box.x + box.width; // Push tank to the right of the hitbox
+                }
+            }
 
+            // Handle Player 2 bullet collision with hitboxes
+            if (
+                _2skud &&
+                _2skudX + radius > box.x &&
+                _2skudX - radius < box.x + box.width &&
+                _2skudY + radius > box.y &&
+                _2skudY - radius < box.y + box.height
+            ) {
+                _2skud = false; // Mark bullet as inactive
+                _2skudX = _2tankXmiddle; // Reset bullet position
+                _2skudY = _2tankYmiddle;
+                _2velocityX = 0;
+                _2velocityY = 0;
+                _2shoot_cooldown += 50;
+                context_player.clearRect(0, 0, canvas_player.width, canvas_player.height);
+                context_bullet2.clearRect(0, 0, canvas_player.width, canvas_player.height);
+                context_player.drawImage(_1tank, _1tankX, _1tankY);
+                context_player.drawImage(_2tank, _2tankX, _2tankY);
+
+                // Find the pillar that was hit, based on the hitbox
+                const pillarIndex = hitboxes.indexOf(box);
+
+                if (pillarIndex !== -1 && pillars[pillarIndex]) {
+                    // Reduce the height of the impacted pillar
+                    pillars[pillarIndex].height -= _2damageHeight;
+                    if (pillars[pillarIndex].height <= 45) {
+                        pillars[pillarIndex].height = 0;
+                    }
+
+
+                    // Adjust the bounding box
+                    if (box) {
+                        box.height -= _2damageHeight;
+                        box.y += _2damageHeight;
+                    }
+
+                    make_ground();
+                }
+            }
+        });
     }
 
     // Lyt til tastetryk for tankens bevægelse
@@ -808,7 +818,7 @@ window.onload = function () {
 
 // Helper function to reset bullet state when it goes out of bounds
         function _2resetBulletState() {
-            _2skudX = _2tankX + 25; // Reset bullet's position to the cannon
+            _2skudX = _2tankX + 25; // Reset bullet's position to *-the cannon
             _2skudY = _2tankY;
             _2velocityX = 0; // Reset velocity
             _2velocityY = 0;
