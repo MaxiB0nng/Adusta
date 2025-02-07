@@ -215,6 +215,8 @@ window.onload = function () {
                     make_ground();
                 }
             }
+
+
         });
 
         hitboxes.forEach((box) => {
@@ -857,6 +859,5 @@ window.onload = function () {
     }
 
     gameLoop();
-
 
 }
