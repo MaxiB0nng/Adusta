@@ -107,6 +107,13 @@ window.onload = function () {
     pillarImage.src = "assets/img/pillar.png"; //
 
 
+    //vinder iconer  der vises når man vinder
+    const player2WinsImage = new Image();
+    const player1WinsImage = new Image();
+    player1WinsImage.src = "assets/img/1wins.png";
+    player2WinsImage.src = "assets/img/2wins.png";
+
+
     //vi bruger de here variabler til at sætte den specifik tid mellem spilets opdateringer.
     //så udasent hvilken pc den kører på de ville være samme hastihed
     let lastTime = 0;
@@ -353,6 +360,9 @@ window.onload = function () {
 
         // Funktion til at opdatere vinklen, når "W" eller "S" tasten holdes nede
         function _1updateVinkel() {
+            if (_1player_alive === false) {
+                return; // stopper functionen hvis spileren er død
+            }
             if (_1upPressed) {
                 _1vinkel += 0.5; // Øg vinklen
                 _1drawTrajectory();
@@ -367,6 +377,9 @@ window.onload = function () {
 
         // Funktion til at affyre et skud
         function _1shoot() {
+            if (_1player_alive === false) {
+                return; // stopper functionen hvis spileren er død
+            }
             if (!_1skud) {
                 if (_1shoot_cooldown === 0) {
 
@@ -406,6 +419,9 @@ window.onload = function () {
 
         // Funktion til at oplade skuddet
         function _1charge() {
+            if (_1player_alive === false) {
+                return; // stopper functionen hvis spileren er død
+            }
             if (!_1skud) {
                 if (_1charge_cooldown < 2) { // Begræns opladningens hastighed
                     if (_1charge_power < 100) { // Maksimal opladning
@@ -418,22 +434,36 @@ window.onload = function () {
 
         // Funktion til at opdatere tankens position
         function _1updateTankPosition() {
+            if (_1player_alive === false) {
+                return; // Stopper funktionen, hvis spiller 1 er død
+            }
             if (_1leftPressed) {
                 _1tankX -= _1movementSpeed; // Flyt tanken til venstre
-                _1drawTrajectory();
-                if (_1tankX < 0) _1tankX = 0; // Undgå, at tanken forlader venstre kant
+                _1drawTrajectory(); // Tegn nyt skudforløb
+                if (_1tankX < 0) _1tankX = 0; // Sørg for, at tanken ikke kommer udenfor skærmens venstre kant
             }
             if (_1rightPressed) {
                 _1tankX += _1movementSpeed; // Flyt tanken til højre
-                _1drawTrajectory();
+                // Tjek for overlap med spiller 2
+                if (
+                    _1tankX < _2tankX + _2tank.width && // Tanken kolliderer med spiller 2 fra højre
+                    _1tankX + _1tank.width > _2tankX && // Tanken kolliderer med spiller 2 fra venstre
+                    Math.abs(_1tankY - _2tankY) < _1tank.height // Begge tanker er på samme højde
+                ) {
+                    _1tankX = _2tankX - _1tank.width; // Flyt spiller 1 til højre for spiller 2
+                }
+                _1drawTrajectory(); // Tegn nyt skudforløb
                 if (_1tankX + _1tank.width > canvas_player.width) {
-                    _1tankX = canvas_player.width - _1tank.width; // Undgå, at tanken forlader højre kant
+                    _1tankX = canvas_player.width - _1tank.width; // Sørg for, at tanken ikke kommer udenfor skærmens højre kant
                 }
             }
         }
 
         // Funktion til at opdage kollision mellem kuglen og spiller 2's tank
         function _1collisionDetection() {
+            if (_1player_alive === false) {
+                return; // stopper functionen hvis spileren er død
+            }
             if (
                 _1skud && // Kuglen skal være aktiv
                 _1skudX + radius > _2tankX && // Kuglens højre kant rører spiller 2
@@ -458,8 +488,8 @@ window.onload = function () {
                     healthBar.classList.remove('hit-flash'); // Fjern effekten efter 500ms
                 }, 500);
 
-                if (_1playerhp <= 0) {
-                    _1player_alive = false; // Hvis helbredet er 0, er spiller 2 ude
+                if (_2playerhp <= 0) {
+                    _2player_alive = false; // Hvis helbredet er 0, er spiller 2 ude
                 }
 
                 // Nulstil kuglens tilstand
@@ -480,6 +510,9 @@ window.onload = function () {
 
         // Funktion til at tegne kuglens bane
         function _1drawTrajectory() {
+            if (_1player_alive === false) {
+                return; // stopper functionen hvis spileren er død
+            }
             _1tankXmiddle = _1tankX + 17;
             _1tankYmiddle = _1tankY + 27;
 
@@ -532,6 +565,9 @@ window.onload = function () {
 
         // Funktion til animation af skuddet
         function _1animate(timestamp) {
+            if (_1player_alive === false) {
+                return; // stopper functionen hvis spileren er død
+            }
             if (_1skud) {
                 if (timestamp - _1lastAnimateTime >= _1animateFrameDuration) {
                     _1lastAnimateTime = timestamp;
@@ -565,6 +601,9 @@ window.onload = function () {
 
         // Hjælpefunktion til at nulstille kuglens tilstand
         function _1resetBulletState() {
+            if (_1player_alive === false) {
+                return; // stopper functionen hvis spileren er død
+            }
             _1skudX = _1tankX + 25;
             _1skudY = _1tankY;
             _1velocityX = 0;
@@ -584,13 +623,19 @@ window.onload = function () {
         if (_1chargePressed) {
             _1charge();
         }
+
+
     }
 
     // Spiller 2
     //det samme gøre vi for player 2
     function _2update() {
 
+
         function _2updateVinkel() {
+            if (_2player_alive === false) {
+                return;
+            }
             if (_2upPressed) {
                 _2vinkel -= 0.5;
                 _2drawTrajectory();
@@ -603,6 +648,9 @@ window.onload = function () {
         }
 
         function _2shoot() {
+            if (_2player_alive === false) {
+                return;
+            }
             if (!_2skud) {
                 if (_2shoot_cooldown === 0) {
                     let _2speed = (_2power / 7) + (_2charge_power / 100);
@@ -631,6 +679,9 @@ window.onload = function () {
         }
 
         function _2charge() {
+            if (_2player_alive === false) {
+                return;
+            }
             if (!_2skud) {
                 if (_2charge_cooldown < 2) {
                     if (_2charge_power < 100) {
@@ -642,8 +693,20 @@ window.onload = function () {
         }
 
         function _2updateTankPosition() {
+            if (_2player_alive === false) {
+                return;
+            }
+
             if (_2leftPressed) {
                 _2tankX -= _2movementSpeed;
+
+                if (
+                    _2tankX + _2tank.width > _1tankX &&
+                    _2tankX < _1tankX + _1tank.width &&
+                    Math.abs(_2tankY - _1tankY) < _2tank.height
+                ) {
+                    _2tankX = _1tankX + _1tank.width;
+                }
                 _2drawTrajectory();
                 if (_2tankX < 0) _2tankX = 0;
             }
@@ -657,6 +720,9 @@ window.onload = function () {
         }
 
         function _2collisionDetection() {
+            if (_2player_alive === false) {
+                return;
+            }
             if (
                 _2skud &&
                 _2skudX + radius > _1tankX &&
@@ -674,8 +740,8 @@ window.onload = function () {
                 setTimeout(() => {
                     healthBar.classList.remove('hit-flash');
                 }, 500);
-                if (_2playerhp <= 0) {
-                    _2player_alive = false;
+                if (_1playerhp <= 0) {
+                    _1player_alive = false;
                 }
                 _2skud = false;
                 _2skudX = _2tankX + 25;
@@ -691,6 +757,9 @@ window.onload = function () {
         }
 
         function _2drawTrajectory() {
+            if (_2player_alive === false) {
+                return;
+            }
             _2tankXmiddle = _2tankX + 17;
             _2tankYmiddle = _2tankY + 27;
             context_player.clearRect(0, 0, canvas_arc2.width, canvas_arc2.height);
@@ -728,6 +797,9 @@ window.onload = function () {
         }
 
         function _2animate(timestamp) {
+            if (_2player_alive === false) {
+                return;
+            }
             if (_2skud) {
                 if (timestamp - _2lastAnimateTime >= _2animateFrameDuration) {
                     _2lastAnimateTime = timestamp;
@@ -750,6 +822,9 @@ window.onload = function () {
         }
 
         function _2resetBulletState() {
+            if (_2player_alive === false) {
+                return;
+            }
             _2skudX = _2tankX + 25;
             _2skudY = _2tankY;
             _2velocityX = 0;
@@ -769,6 +844,8 @@ window.onload = function () {
         }
     }
 
+
+
 // Funktion til at starte spillets hovedløkke
     function gameLoop(timestamp) {
         const deltaTime = timestamp - lastTime; // Beregn tid siden sidste frame i millisekunder
@@ -782,9 +859,37 @@ window.onload = function () {
 
         // Planlæg næste frame
         requestAnimationFrame(gameLoop);
+
+
+        // Check for winner
+        if (!_1player_alive) {
+            console.log("Player 1 is dead");
+            drawWinner(player2WinsImage); // Display "Player 2 Wins" image
+            return; // Stop the game loop
+        }
+        if (!_2player_alive) {
+            console.log("Player 2 is dead");
+            drawWinner(player1WinsImage); // Display "Player 1 Wins" image
+            return; // Stop the game loop
+        }
+    }
+
+    // Function til at tejen et bilde der viser hvilken spiler der vinder
+    function drawWinner(winnerImage) {
+
+        context_player.clearRect(0, 0, canvas_player.width, canvas_player.height); // Clear the canvas
+        context_player.drawImage(winnerImage, canvas_player.width / 2 - 200, canvas_player.height / 2 - 100, 400, 200);
+
+        // Set up text properties
+        context_player.font = "35px Arial";
+        context_player.fillStyle = "black"; // Text color
+        context_player.textAlign = "center";
+
+        // Add text below the image
+        const text = "reload to play again";
+        context_player.fillText(text, canvas_player.width / 2, canvas_player.height / 2 + 130, ); // Position text below the image
     }
 
 // Start spillets hovedløkke
     gameLoop();
-
 }
