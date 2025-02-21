@@ -555,7 +555,9 @@ window.onload = function () {
 
                     context_arc1.lineTo(_1trajectoryX, _1trajectoryY);
 
-                    if (_1trajectoryX > canvas_arc1.width || _1trajectoryY > canvas_arc1.height || _1trajectoryY > ground_level) break;
+                    if (_1trajectoryX > canvas_arc1.width
+                        || _1trajectoryY > canvas_arc1.height
+                        || _1trajectoryY > ground_level) break;
                 }
                 context_arc1.clearRect(0, 0, canvas_arc1.width, canvas_arc1.height); // Ryd bane-lærredet
                 context_arc1.stroke(); // Tegn banen
@@ -845,7 +847,6 @@ window.onload = function () {
     }
 
 
-
 // Funktion til at starte spillets hovedløkke
     function gameLoop(timestamp) {
         const deltaTime = timestamp - lastTime; // Beregn tid siden sidste frame i millisekunder
@@ -891,5 +892,4 @@ window.onload = function () {
     }
 
 // Start spillets hovedløkke
-    gameLoop();
-}
+    gameLoop();}
